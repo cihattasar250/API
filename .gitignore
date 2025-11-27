@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/spor_proje_api/spor_proje_api/Dockerfile
+/spor_proje_api/Dockerfile
+/spor_proje_api/Dockerfile
