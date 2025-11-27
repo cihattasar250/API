@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Kayıt Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Tarayıcı autocomplete dropdown'unu gizle */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            box-shadow: 0 0 0 30px white inset !important;
+        }
+        
+        /* Autocomplete dropdown'unu gizle */
+        input::-webkit-contacts-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button {
+            visibility: hidden;
+            display: none !important;
+            pointer-events: none;
+            height: 0;
+            width: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>✨ Üye Kayıt Test Sayfası</h2>
+        
+        <form id="uyeKayitForm" autocomplete="off" novalidate>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="ad">Ad:</label>
+                    <input type="text" id="ad" name="random_name_1" placeholder="Ahmet" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+                
+                <div class="form-group">
+                    <label for="soyad">Soyad:</label>
+                    <input type="text" id="soyad" name="random_name_2" placeholder="Yılmaz" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="random_name_3" placeholder="ahmet@example.com" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+                
+                <div class="form-group">
+                    <label for="telefon">Telefon:</label>
+                    <input type="text" id="telefon" name="random_name_4" placeholder="05551234567" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dogumTarihi">Doğum Tarihi:</label>
+                    <input type="date" id="dogumTarihi" name="random_name_5" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+                
+                <div class="form-group">
+                    <label for="cinsiyet">Cinsiyet:</label>
+                    <select id="cinsiyet" name="random_name_6" required autocomplete="nope">
+                        <option value="">Seçiniz</option>
+                        <option value="Erkek">Erkek</option>
+                        <option value="Kadın">Kadın</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="adres">Adres:</label>
+                <input type="text" id="adres" name="random_name_7" placeholder="İstanbul, Türkiye" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="uyeNumarasi">Üye Numarası:</label>
+                    <input type="text" id="uyeNumarasi" name="random_name_8" placeholder="UYE001" required autocomplete="nope" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+                
+                <div class="form-group">
+                    <label for="sifre">Şifre:</label>
+                    <input type="password" id="sifre" name="random_name_9" placeholder="123456" required autocomplete="new-password" readonly onfocus="this.removeAttribute('readonly');">
+                </div>
+            </div>
+            
+            <button type="submit">Üye Kaydı Oluştur</button>
+        </form>
+        
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
+        <div id="result" class="result"></div>
+        
+        <!-- Tüm Üyeleri Listele -->
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>📋 Veritabanındaki Tüm Üyeler</h3>
+            <button onclick="listUyeler()" style="width: 100%; margin-bottom: 10px; background: #28a745;">Üyeleri Listele</button>
+            <div id="uyeList" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api';
+        
+        // Sayfa yüklendiğinde autocomplete'i engelle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tüm input alanlarını readonly yap, sonra focus olduğunda kaldır
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                // Autocomplete'i tamamen kapat
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('spellcheck', 'false');
+                
+                // Readonly ekle ve focus olduğunda kaldır
+                if (!input.hasAttribute('readonly')) {
+                    input.setAttribute('readonly', 'readonly');
+                    input.addEventListener('focus', function() {
+                        this.removeAttribute('readonly');
+                    });
+                }
+            });
+        });
+        
+        // Kayıt formu event listener
+        document.getElementById('uyeKayitForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Mesajları temizle
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('result').textContent = '';
+            document.getElementById('uyeList').textContent = '';
+            
+            // TÜM VERİLERİ TOPLA
+            const kayitData = {
+                ad: document.getElementById('ad').value.trim(),
+                soyad: document.getElementById('soyad').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                telefon: document.getElementById('telefon').value.trim(),
+                dogumTarihi: document.getElementById('dogumTarihi').value,
+                cinsiyet: document.getElementById('cinsiyet').value,
+                adres: document.getElementById('adres').value.trim(),
+                uyeNumarasi: document.getElementById('uyeNumarasi').value.trim(),
+                sifre: document.getElementById('sifre').value
+            };
+            
+            console.log('✅ Kayıt verisi hazır:', kayitData);
+            
+            try {
+                
+                const response = await fetch(`${API_BASE_URL}/Uye/kayit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(kayitData)
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response:', errorText);
+                    try {
+                        const errorData = JSON.parse(errorText);
+                        let errorMsg = errorData.message || 'Kayıt oluşturulamadı!';
+                        // Eğer üyelik türü hatası varsa, daha detaylı bilgi göster
+                        if (errorData.receivedValue !== undefined) {
+                            errorMsg += `\nGelen değer: ${errorData.receivedValue} (Tip: ${errorData.receivedType || 'bilinmiyor'})`;
+                            console.error('Üyelik türü hatası detayları:', errorData);
+                        }
+                        document.getElementById('errorMessage').textContent = errorMsg;
+                    } catch {
+                        document.getElementById('errorMessage').textContent = `HTTP Hatası! Status: ${response.status} - ${errorText}`;
+                    }
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('result').textContent = `Status: ${response.status}\nResponse: ${errorText}`;
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                document.getElementById('successMessage').textContent = 'Üye kaydı başarıyla oluşturuldu! Kayıt ID: ' + data.id;
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                
+                // Formu temizle
+                document.getElementById('uyeKayitForm').reset();
+                
+                // Üyeleri listele
+                setTimeout(() => listUyeler(), 500);
+            } catch (error) {
+                console.error('Fetch error:', error);
+                document.getElementById('errorMessage').textContent = 'Bağlantı hatası: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('result').textContent = 'Hata: ' + error.message;
+            }
+        });
+        
+        // Tüm üyeleri listele
+        async function listUyeler() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Uye`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('uyeList').textContent = 'Toplam Üye Sayısı: ' + data.length + '\n\n' + JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('uyeList').textContent = 'Hata: ' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                document.getElementById('uyeList').textContent = 'Bağlantı hatası: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
+

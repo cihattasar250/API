@@ -1,0 +1,53 @@
+### Ücret Güncelleme API Test Dosyası
+
+### 1. Mevcut ücreti getir
+GET http://localhost:7043/api/Ucret/uye/1/mevcut
+Content-Type: application/json
+
+###
+
+### 2. Ücret artış nedenlerini getir
+GET http://localhost:7043/api/Ucret/artis-nedenleri
+Content-Type: application/json
+
+###
+
+### 3. Ücret güncelle
+POST http://localhost:7043/api/Ucret/guncelle
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "yeniUcret": 150.00,
+  "artisNedeni": "Ek Hizmet Eklendi",
+  "aciklama": "Yeni fitness programı ve kişisel antrenör hizmeti eklendi",
+  "gecerlilikTarihi": "2025-01-01T00:00:00"
+}
+
+###
+
+### 4. Üyenin ücret geçmişini getir
+GET http://localhost:7043/api/Ucret/uye/1
+Content-Type: application/json
+
+###
+
+### 5. Tüm ücret güncellemelerini getir
+GET http://localhost:7043/api/Ucret/tum-guncellemeler
+Content-Type: application/json
+
+###
+
+### 6. Başka bir ücret güncelleme örneği
+POST http://localhost:7043/api/Ucret/guncelle
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "yeniUcret": 200.00,
+  "artisNedeni": "Enflasyon Düzeltmesi",
+  "aciklama": "Genel ekonomik koşullar nedeniyle ücret artışı",
+  "gecerlilikTarihi": "2025-02-01T00:00:00"
+}
+
+###

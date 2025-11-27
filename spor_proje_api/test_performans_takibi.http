@@ -1,0 +1,92 @@
+### Performans Takibi API Test Dosyası
+
+### 1. Yeni Performans Kaydı Ekle
+POST {{host}}/api/PerformansTakibi
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "tarih": "2025-01-22T00:00:00",
+  "kilo": 75.5,
+  "vucutYagOrani": 15.2,
+  "kasKutlesi": 35.8,
+  "kardiyoSuresi": 30,
+  "notlar": "Bugünkü performansım çok iyiydi. Kardiyo sonrası kendimi çok enerjik hissediyorum."
+}
+
+### 2. Belirli Bir Üyenin Tüm Performans Kayıtlarını Getir
+GET {{host}}/api/PerformansTakibi/Uye/1
+
+### 3. Belirli Bir Üyenin Son Performans Kaydını Getir
+GET {{host}}/api/PerformansTakibi/Uye/1/SonKayit
+
+### 4. Belirli Bir Üyenin Performans İstatistiklerini Getir
+GET {{host}}/api/PerformansTakibi/Uye/1/Istatistikler
+
+### 5. Belirli Bir Performans Kaydını Getir
+GET {{host}}/api/PerformansTakibi/1
+
+### 6. Performans Kaydını Güncelle
+PUT {{host}}/api/PerformansTakibi/1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "uyeId": 1,
+  "tarih": "2025-01-22T00:00:00",
+  "kilo": 75.2,
+  "vucutYagOrani": 14.8,
+  "kasKutlesi": 36.1,
+  "kardiyoSuresi": 35,
+  "notlar": "Güncellenmiş notlar: Bugünkü performansım harikaydı!"
+}
+
+### 7. Performans Kaydını Sil
+DELETE {{host}}/api/PerformansTakibi/1
+
+### 8. Tüm Performans Kayıtlarını Getir
+GET {{host}}/api/PerformansTakibi
+
+### Test için örnek veriler:
+
+### Örnek Kayıt 1
+POST {{host}}/api/PerformansTakibi
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "tarih": "2025-01-20T00:00:00",
+  "kilo": 76.0,
+  "vucutYagOrani": 16.0,
+  "kasKutlesi": 35.0,
+  "kardiyoSuresi": 25,
+  "notlar": "İlk kayıt - başlangıç değerleri"
+}
+
+### Örnek Kayıt 2
+POST {{host}}/api/PerformansTakibi
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "tarih": "2025-01-21T00:00:00",
+  "kilo": 75.8,
+  "vucutYagOrani": 15.5,
+  "kasKutlesi": 35.3,
+  "kardiyoSuresi": 28,
+  "notlar": "İkinci gün - küçük iyileşme"
+}
+
+### Örnek Kayıt 3
+POST {{host}}/api/PerformansTakibi
+Content-Type: application/json
+
+{
+  "uyeId": 1,
+  "tarih": "2025-01-22T00:00:00",
+  "kilo": 75.5,
+  "vucutYagOrani": 15.2,
+  "kasKutlesi": 35.8,
+  "kardiyoSuresi": 30,
+  "notlar": "Üçüncü gün - daha da iyi!"
+}

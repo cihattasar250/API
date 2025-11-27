@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Paneli</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .info-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .info-value {
+            color: #212529;
+        }
+        
+        .termination-section {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .termination-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .termination-section p {
+            color: #856404;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .approve-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            width: 100%;
+            justify-content: center;
+            z-index: 10;
+            position: relative;
+        }
+        
+        .approve-button:hover:not(:disabled) {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .approve-button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        
+        .approve-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .approve-button .checkmark {
+            font-size: 18px;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: #6c757d;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .logout-button {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .logout-button:hover {
+            background: #5a6268;
+        }
+        
+        .package-section {
+            background: #e7f3ff;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .package-section h3 {
+            color: #004085;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .package-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .package-btn {
+            background: white;
+            border: 2px solid #007bff;
+            color: #007bff;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .package-btn:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .package-btn.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .countdown-section {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .countdown-section.active {
+            display: block;
+        }
+        
+        .countdown-section h3 {
+            color: #0c5460;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .countdown-display {
+            font-size: 48px;
+            font-weight: bold;
+            color: #0c5460;
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .countdown-info {
+            text-align: center;
+            color: #0c5460;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>👤 Üye Paneli</h1>
+            <p>Hoş geldiniz, bilgilerinizi görüntüleyin ve yönetin</p>
+        </div>
+        
+        <div class="content">
+            <div id="loading" class="loading">Yükleniyor...</div>
+            
+            <div id="message" class="message"></div>
+            
+            <div id="userInfo" style="display: none;">
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="info-label">Ad Soyad:</span>
+                        <span class="info-value" id="adSoyad">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" id="email">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Telefon:</span>
+                        <span class="info-value" id="telefon">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Üye Numarası:</span>
+                        <span class="info-value" id="uyeNumarasi">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Üyelik Türü:</span>
+                        <span class="info-value" id="uyelikTuru">-</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Kayıt Tarihi:</span>
+                        <span class="info-value" id="kayitTarihi">-</span>
+                    </div>
+                    <!-- Sayaç arka planda çalışır, görüntülenmez -->
+                </div>
+                
+                <!-- Paket Seçimi Bölümü -->
+                <div class="package-section" id="packageSection" style="display: none;">
+                    <h3>📦 Üyelik Paketi Seç</h3>
+                    <p style="color: #004085; margin-bottom: 15px;">Paket seçerek üyeliğinizi başlatabilirsiniz.</p>
+                    
+                    <div class="package-buttons">
+                        <button class="package-btn" onclick="selectPackage(1, 'Günlük', 1, this)">Günlük</button>
+                        <button class="package-btn" onclick="selectPackage(2, 'Haftalık', 7, this)">Haftalık</button>
+                        <button class="package-btn" onclick="selectPackage(3, 'Aylık', 30, this)">Aylık</button>
+                        <button class="package-btn" onclick="selectPackage(4, 'Yıllık', 365, this)">Yıllık</button>
+                    </div>
+                </div>
+                
+                <!-- Sayaç Bölümü - Tıklanabilir -->
+                <div id="countdownSection" class="countdown-section" style="cursor: pointer;" onclick="togglePackageSection()">
+                    <h3>⏱️ Üyelik Süresi <span style="font-size: 14px; opacity: 0.7;">(Paketler için tıklayın)</span></h3>
+                    <div class="countdown-display" id="countdownDisplay">00:00:00:00</div>
+                    <div class="countdown-info">
+                        <p id="countdownInfo">Paket seçiniz</p>
+                    </div>
+                </div>
+                
+                <!-- Antrenman Yönetimi Bölümü -->
+                <div class="antrenman-section" style="background: #e7f3ff; border: 2px solid #007bff; border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                    <h3 style="color: #004085; margin-bottom: 15px; font-size: 20px;">🏋️ Antrenman Yönetimi</h3>
+                    
+                    <!-- Antrenman Ekleme Formu -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #004085; margin-bottom: 10px;">Yeni Antrenman Ekle</h4>
+                        <div style="display: grid; gap: 10px;">
+                            <input type="text" id="antrenmanAdi" placeholder="Antrenman Adı *" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                            <textarea id="antrenmanAciklama" placeholder="Açıklama" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 60px;"></textarea>
+                            <input type="number" id="antrenmanSure" placeholder="Süre (dakika)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <select id="antrenmanTipi" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <option value="">Antrenman Tipi Seçin</option>
+                                <option value="Kardiyo">Kardiyo</option>
+                                <option value="Kuvvet">Kuvvet</option>
+                                <option value="Teknik">Teknik</option>
+                                <option value="Esneklik">Esneklik</option>
+                            </select>
+                            <input type="number" id="kaloriYakilan" placeholder="Kalori Yakılan" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="number" id="kalpAtisHizi" placeholder="Kalp Atış Hızı" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <textarea id="antrenmanNotlar" placeholder="Notlar" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 60px;"></textarea>
+                            <button onclick="addAntrenman()" style="background: #007bff; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 600;">✅ Antrenman Ekle</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Antrenman Listesi -->
+                    <div>
+                        <h4 style="color: #004085; margin-bottom: 10px;">Antrenmanlarım</h4>
+                        <button onclick="loadAntrenmanlar()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-bottom: 15px;">🔄 Listeyi Yenile</button>
+                        <div id="antrenmanListesi" style="max-height: 400px; overflow-y: auto;">
+                            <p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Beslenme Takibi Bölümü -->
+                <div class="beslenme-section" style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                    <h3 style="color: #856404; margin-bottom: 15px; font-size: 20px;">🍎 Beslenme Takibi</h3>
+                    
+                    <!-- Beslenme Ekleme Formu -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #856404; margin-bottom: 10px;">Yeni Beslenme Kaydı Ekle</h4>
+                        <div style="display: grid; gap: 10px;">
+                            <input type="text" id="yemekAdi" placeholder="Yemek Adı *" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                            <select id="ogun" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <option value="">Öğün Seçin</option>
+                                <option value="Kahvaltı">Kahvaltı</option>
+                                <option value="Öğle">Öğle</option>
+                                <option value="Akşam">Akşam</option>
+                                <option value="Atıştırmalık">Atıştırmalık</option>
+                            </select>
+                            <input type="number" step="0.01" id="kalori" placeholder="Kalori" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="number" step="0.01" id="protein" placeholder="Protein (gram)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="number" step="0.01" id="karbonhidrat" placeholder="Karbonhidrat (gram)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="number" step="0.01" id="yag" placeholder="Yağ (gram)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <textarea id="beslenmeAciklama" placeholder="Açıklama" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 60px;"></textarea>
+                            <button onclick="addBeslenme()" style="background: #ffc107; color: #856404; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 600;">✅ Beslenme Kaydı Ekle</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Beslenme Listesi -->
+                    <div>
+                        <h4 style="color: #856404; margin-bottom: 10px;">Beslenme Kayıtlarım</h4>
+                        <button onclick="loadBeslenme()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-bottom: 15px;">🔄 Listeyi Yenile</button>
+                        <div id="beslenmeListesi" style="max-height: 400px; overflow-y: auto;">
+                            <p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hedef Yönetimi Bölümü -->
+                <div class="hedef-section" style="background: #d1ecf1; border: 2px solid #17a2b8; border-radius: 10px; padding: 25px; margin-bottom: 20px;">
+                    <h3 style="color: #0c5460; margin-bottom: 15px; font-size: 20px;">🎯 Hedef Yönetimi</h3>
+                    
+                    <!-- Hedef Ekleme Formu -->
+                    <div style="margin-bottom: 20px;">
+                        <h4 style="color: #0c5460; margin-bottom: 10px;">Yeni Hedef Ekle</h4>
+                        <div style="display: grid; gap: 10px;">
+                            <input type="text" id="hedefAdi" placeholder="Hedef Adı *" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                            <select id="hedefKategori" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                                <option value="">Hedef Türü Seçin *</option>
+                                <option value="Kilo Alma">Kilo Alma</option>
+                                <option value="Kilo Verme">Kilo Verme</option>
+                                <option value="Performans">Performans</option>
+                                <option value="Antrenman">Antrenman</option>
+                                <option value="Rekor">Rekor</option>
+                                <option value="Kilo">Kilo</option>
+                            </select>
+                            <input type="number" step="0.01" id="hedefDeger" placeholder="Hedef Değer" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="date" id="hedefBaslangicTarihi" placeholder="Başlangıç Tarihi" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <input type="date" id="hedefTarihi" placeholder="Hedef Tarihi *" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;" required>
+                            <textarea id="hedefAciklama" placeholder="Notlar" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; min-height: 60px;"></textarea>
+                            <input type="text" id="hedefBirim" placeholder="Birim (kg, km, saniye vb.)" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                            <button onclick="addHedef()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px;">✅ Hedef Ekle</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hedef Listesi -->
+                    <div>
+                        <h4 style="color: #0c5460; margin-bottom: 10px;">Hedeflerim</h4>
+                        <button onclick="loadHedefler()" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; margin-bottom: 15px;">🔄 Listeyi Yenile</button>
+                        <div id="hedefListesi" style="max-height: 400px; overflow-y: auto;">
+                            <p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="termination-section">
+                    <h3>⚠️ Üyelik Sonlandırma</h3>
+                    <p>Üyeliğinizi sonlandırmak istediğinizden emin misiniz? Bu işlem geri alınamaz. Onayladıktan sonra otomatik olarak çıkış yapılacaksınız.</p>
+                    
+                    <button id="approveButton" class="approve-button" onclick="onaylaVeCikisYap()">
+                        <span class="checkmark">✓</span>
+                        <span>Onayla</span>
+                    </button>
+                    
+                    <button class="logout-button" onclick="cikisYap()">Çıkış Yap</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api/Uye';
+        const API_ANTRENMAN_URL = 'http://localhost:7043/api/Antrenman';
+        const API_BESLENME_URL = 'http://localhost:7043/api/Beslenme';
+        const API_HEDEF_URL = 'http://localhost:7043/api/Hedef';
+        
+        // Token'ı localStorage'dan al
+        let authToken = localStorage.getItem('token');
+        let userId = null;
+        let countdownInterval = null;
+        
+        // Sayfa yüklendiğinde
+        document.addEventListener('DOMContentLoaded', function() {
+            // URL parametrelerinden token kontrolü
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenParam = urlParams.get('token');
+            
+            if (tokenParam) {
+                authToken = tokenParam;
+                localStorage.setItem('token', tokenParam);
+            }
+            
+            if (!authToken) {
+                showMessage('Lütfen önce giriş yapın!', 'error');
+                setTimeout(() => {
+                    window.location.href = 'uye_giris.html';
+                }, 2000);
+                return;
+            }
+            
+            // Üye bilgilerini yükle
+            loadUserInfo();
+        });
+        
+        // Eski kullanıcı verilerini temizle (farklı üye giriş yaptığında)
+        function clearOldUserData(oldUserId) {
+            if (!oldUserId) return;
+            
+            // Tüm localStorage key'lerini al
+            const allKeys = Object.keys(localStorage);
+            
+            // Eski üyenin tüm verilerini temizle (userId ile biten veya başlayan)
+            const keysToRemove = [
+                `uyelikPaketi_${oldUserId}`,
+                `sayac_${oldUserId}`,
+                `uyePaket_${oldUserId}`,
+                `membership_${oldUserId}`,
+                `countdown_${oldUserId}`,
+                `paketBaslangic_${oldUserId}`,
+                `paketBitis_${oldUserId}`,
+                `uyelikTuru_${oldUserId}`,
+                `paketSure_${oldUserId}`
+            ];
+            
+            keysToRemove.forEach(key => {
+                localStorage.removeItem(key);
+            });
+            
+            // Genel pattern'leri temizle (eski üye ID'si içeren)
+            allKeys.forEach(key => {
+                // Eğer key eski userId'yi içeriyorsa ve yeni userId'yi içermiyorsa sil
+                if ((key.includes(`_${oldUserId}`) || key.endsWith(`_${oldUserId}`)) && 
+                    !key.includes(`_${localStorage.getItem('currentUserId')}_`)) {
+                    // Sadece üyelik paketi ve sayaç ile ilgili key'leri sil
+                    if (key.includes('uyelik') || key.includes('paket') || key.includes('sayac') || 
+                        key.includes('membership') || key.includes('countdown')) {
+                        localStorage.removeItem(key);
+                    }
+                }
+            });
+        }
+        
+        // Üye bilgilerini yükle
+        async function loadUserInfo() {
+            try {
+                document.getElementById('loading').classList.add('active');
+                
+                const response = await fetch(`${API_BASE_URL}/panel`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                if (response.status === 401) {
+                    showMessage('Oturum süresi dolmuş. Lütfen tekrar giriş yapın.', 'error');
+                    setTimeout(() => {
+                        localStorage.removeItem('token');
+                        window.location.href = 'uye_kayit_test.html';
+                    }, 2000);
+                    return;
+                }
+                
+                if (!response.ok) {
+                    throw new Error('Bilgiler yüklenemedi');
+                }
+                
+                const data = await response.json();
+                const uye = data.uye;
+                
+                // Bilgileri göster
+                document.getElementById('adSoyad').textContent = `${uye.Ad} ${uye.Soyad}`;
+                document.getElementById('email').textContent = uye.Email;
+                document.getElementById('telefon').textContent = uye.Telefon;
+                document.getElementById('uyeNumarasi').textContent = uye.UyeNumarasi;
+                
+                const uyelikTurleri = {
+                    1: 'Günlük',
+                    2: 'Haftalık',
+                    3: 'Aylık',
+                    4: 'Yıllık'
+                };
+                document.getElementById('uyelikTuru').textContent = uyelikTurleri[uye.UyelikTuru] || 'Bilinmiyor';
+                
+                const kayitTarihi = new Date(uye.KayitTarihi);
+                document.getElementById('kayitTarihi').textContent = kayitTarihi.toLocaleDateString('tr-TR');
+                
+                // Sayaç arka planda çalışır, frontend'de başlatılmaz
+                
+                // Önceki kullanıcı ID'sini kontrol et
+                const previousUserId = localStorage.getItem('currentUserId');
+                const currentUserId = uye.Id.toString();
+                
+                // Eğer farklı bir üye giriş yaptıysa, eski verileri temizle
+                if (previousUserId && previousUserId !== currentUserId) {
+                    console.log(`Eski üye ID: ${previousUserId}, Yeni üye ID: ${currentUserId} - Eski veriler temizleniyor...`);
+                    clearOldUserData(previousUserId);
+                }
+                
+                // Yeni üye ID'sini kaydet
+                localStorage.setItem('currentUserId', currentUserId);
+                userId = uye.Id;
+                
+                // Üyelik paketi ve sayaç verilerini kontrol et/yükle
+                // Önce veritabanından paket bilgilerini kontrol et
+                if (uye.PaketBaslangicTarihi && uye.PaketBitisTarihi) {
+                    // Veritabanında paket var, sayaç başlat
+                    const paketBilgisi = {
+                        uyelikTuru: uye.UyelikTuru,
+                        paketBaslangicTarihi: uye.PaketBaslangicTarihi,
+                        paketBitisTarihi: uye.PaketBitisTarihi
+                    };
+                    setUserStorage('paketBilgisi', paketBilgisi);
+                    startCountdown(paketBilgisi);
+                } else {
+                    // localStorage'dan kontrol et (eğer veritabanı güncellenmemişse)
+                    const paketBilgisi = getUserStorage('paketBilgisi');
+                    if (paketBilgisi && paketBilgisi.paketBitisTarihi) {
+                        startCountdown(paketBilgisi);
+                    }
+                }
+                
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('userInfo').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Hata:', error);
+                document.getElementById('loading').classList.remove('active');
+                showMessage('Bilgiler yüklenirken bir hata oluştu: ' + error.message, 'error');
+            }
+        }
+        
+        // Onayla ve çıkış yap
+        async function onaylaVeCikisYap() {
+            const button = document.getElementById('approveButton');
+            
+            // Butonu devre dışı bırak
+            button.disabled = true;
+            button.innerHTML = '<span>İşleniyor...</span>';
+            
+            try {
+                // Bilgi kontrolü - basit validasyon
+                const adSoyad = document.getElementById('adSoyad').textContent.trim();
+                const email = document.getElementById('email').textContent.trim();
+                
+                if (!adSoyad || adSoyad === '-' || !email || email === '-') {
+                    throw new Error('Üye bilgileri eksik veya geçersiz!');
+                }
+                
+                // Üyelik sonlandırma isteği
+                const response = await fetch(`${API_BASE_URL}/uyelik-bitir`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Bir hata oluştu' }));
+                    throw new Error(errorData.message || 'Üyelik sonlandırılamadı');
+                }
+                
+                const result = await response.json();
+                
+                // Başarı mesajı göster
+                showMessage('✅ ' + (result.message || 'Üyelik başarıyla sonlandırıldı!'), 'success');
+                
+                // Çıkış yaparken sadece token'ı temizle
+                // Sayaç verileri korunacak (localStorage'da kalacak)
+                localStorage.removeItem('token');
+                // currentUserId'yi temizleme - sayaç verileri için gerekli
+                // localStorage.removeItem('currentUserId');
+                
+                // Kısa bir bekleme sonrası çıkış yap
+                setTimeout(() => {
+                    alert('Üyeliğiniz sonlandırıldı. Çıkış yapılıyor...');
+                    window.location.href = 'uye_giris.html';
+                }, 500);
+                
+            } catch (error) {
+                console.error('Hata:', error);
+                showMessage('❌ Hata: ' + error.message, 'error');
+                
+                // Butonu tekrar etkinleştir
+                button.disabled = false;
+                button.innerHTML = '<span class="checkmark">✓</span><span>Onayla</span>';
+            }
+        }
+        
+        // Sadece çıkış yap
+        function cikisYap() {
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                // Interval'i temizle (sayfa kapanmadan önce)
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+                
+                // Çıkış yaparken sadece token'ı temizle
+                // Sayaç verileri korunacak (localStorage'da kalacak)
+                localStorage.removeItem('token');
+                // currentUserId'yi temizleme - sayaç verileri için gerekli
+                // localStorage.removeItem('currentUserId');
+                
+                window.location.href = 'uye_giris.html';
+            }
+        }
+        
+        // Üye ID'sine göre localStorage key'leri oluştur
+        function getUserStorageKey(key) {
+            const currentUserId = localStorage.getItem('currentUserId') || userId?.toString() || '0';
+            return `${key}_${currentUserId}`;
+        }
+        
+        // Üye ID'sine göre localStorage'dan veri al
+        function getUserStorage(key) {
+            const storageKey = getUserStorageKey(key);
+            const value = localStorage.getItem(storageKey);
+            return value ? JSON.parse(value) : null;
+        }
+        
+        // Üye ID'sine göre localStorage'a veri kaydet
+        function setUserStorage(key, value) {
+            const storageKey = getUserStorageKey(key);
+            localStorage.setItem(storageKey, JSON.stringify(value));
+        }
+        
+        // Üye ID'sine göre localStorage'dan veri sil
+        function removeUserStorage(key) {
+            const storageKey = getUserStorageKey(key);
+            localStorage.removeItem(storageKey);
+        }
+        
+        // Mesaj göster
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageDiv.className = 'message';
+                    messageDiv.textContent = '';
+                }, 5000);
+            }
+        }
+        
+        // Paket seç
+        async function selectPackage(uyelikTuru, paketAdi, gunSayisi, buttonElement) {
+            try {
+                // Paket başlatma isteği
+                const response = await fetch(`${API_BASE_URL}/paket-baslat`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ uyelikTuru: uyelikTuru })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: 'Bir hata oluştu' }));
+                    throw new Error(errorData.message || 'Paket başlatılamadı');
+                }
+                
+                const result = await response.json();
+                const paketBilgisi = result.paketBilgisi;
+                
+                // Paket bilgilerini localStorage'a kaydet
+                setUserStorage('paketBilgisi', paketBilgisi);
+                
+                // Sayaç bölümünü göster ve başlat
+                document.getElementById('countdownSection').classList.add('active');
+                startCountdown(paketBilgisi);
+                
+                showMessage(`✅ ${paketAdi} paketi başarıyla başlatıldı!`, 'success');
+                
+                // Buton aktif durumunu güncelle
+                document.querySelectorAll('.package-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                if (buttonElement) {
+                    buttonElement.classList.add('active');
+                }
+                
+            } catch (error) {
+                console.error('Hata:', error);
+                showMessage('❌ Hata: ' + error.message, 'error');
+            }
+        }
+        
+        // Sayaç başlat
+        function startCountdown(paketBilgisi) {
+            // Önceki interval'i temizle
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Paket bilgilerini localStorage'a kaydet
+            setUserStorage('paketBilgisi', paketBilgisi);
+            
+            // Sayaç bölümünü göster
+            document.getElementById('countdownSection').classList.add('active');
+            
+            // Sayaç güncelleme fonksiyonu
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const bitisTarihi = new Date(paketBilgisi.paketBitisTarihi).getTime();
+                const kalanSure = bitisTarihi - now;
+                
+                if (kalanSure <= 0) {
+                    // Süre doldu
+                    document.getElementById('countdownDisplay').textContent = '00:00:00:00';
+                    document.getElementById('countdownInfo').textContent = 'Paket süresi doldu!';
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                    return;
+                }
+                
+                // Kalan süreyi hesapla
+                const gunler = Math.floor(kalanSure / (1000 * 60 * 60 * 24));
+                const saatler = Math.floor((kalanSure % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const dakikalar = Math.floor((kalanSure % (1000 * 60 * 60)) / (1000 * 60));
+                const saniyeler = Math.floor((kalanSure % (1000 * 60)) / 1000);
+                
+                // Formatla ve göster
+                const format = (num) => num.toString().padStart(2, '0');
+                document.getElementById('countdownDisplay').textContent = 
+                    `${format(gunler)}:${format(saatler)}:${format(dakikalar)}:${format(saniyeler)}`;
+                
+                const paketAdi = paketBilgisi.uyelikTuru === 1 ? 'Günlük' :
+                                paketBilgisi.uyelikTuru === 2 ? 'Haftalık' :
+                                paketBilgisi.uyelikTuru === 3 ? 'Aylık' : 'Yıllık';
+                document.getElementById('countdownInfo').textContent = 
+                    `${paketAdi} paket - Bitiş: ${new Date(paketBilgisi.paketBitisTarihi).toLocaleString('tr-TR')}`;
+            }
+            
+            // İlk güncelleme
+            updateCountdown();
+            
+            // Her saniye güncelle
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+        
+        // Paket bölümünü aç/kapat
+        function togglePackageSection() {
+            const packageSection = document.getElementById('packageSection');
+            if (packageSection.style.display === 'none') {
+                packageSection.style.display = 'block';
+            } else {
+                packageSection.style.display = 'none';
+            }
+        }
+        
+        
+        // Sayfa kapanırken interval'leri temizle
+        window.addEventListener('beforeunload', function() {
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+        });
+        
+        // Antrenman ekle
+        async function addAntrenman() {
+            if (!authToken) {
+                showMessage('Lütfen önce giriş yapın!', 'error');
+                return;
+            }
+            
+            const antrenman = {
+                AntrenmanAdi: document.getElementById('antrenmanAdi').value.trim(),
+                Aciklama: document.getElementById('antrenmanAciklama').value.trim(),
+                Sure: parseInt(document.getElementById('antrenmanSure').value || 0),
+                AntrenmanTipi: document.getElementById('antrenmanTipi').value,
+                KaloriYakilan: parseInt(document.getElementById('kaloriYakilan').value || 0),
+                KalpAtisHizi: parseInt(document.getElementById('kalpAtisHizi').value || 0),
+                Notlar: document.getElementById('antrenmanNotlar').value.trim()
+            };
+            
+            // Validasyon
+            if (!antrenman.AntrenmanAdi) {
+                showMessage('Lütfen antrenman adı girin!', 'error');
+                return;
+            }
+            
+            try {
+                console.log('📤 Antrenman ekleniyor:', antrenman);
+                
+                const response = await fetch(`${API_ANTRENMAN_URL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(antrenman)
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ API Hatası: HTTP 404: Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_ANTRENMAN_URL}`);
+                        showMessage('API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.', 'error');
+                        return;
+                    }
+                    
+                    console.error('❌ Antrenman ekleme hatası:', errorData);
+                    showMessage('Antrenman eklenirken hata oluştu: ' + (errorData.message || 'Bilinmeyen hata'), 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('✅ Antrenman başarıyla eklendi:', data);
+                showMessage('✅ Antrenman başarıyla eklendi!', 'success');
+                
+                // Formu temizle
+                document.getElementById('antrenmanAdi').value = '';
+                document.getElementById('antrenmanAciklama').value = '';
+                document.getElementById('antrenmanSure').value = '';
+                document.getElementById('antrenmanTipi').value = '';
+                document.getElementById('kaloriYakilan').value = '';
+                document.getElementById('kalpAtisHizi').value = '';
+                document.getElementById('antrenmanNotlar').value = '';
+                
+                // Listeyi yenile
+                await loadAntrenmanlar();
+                
+            } catch (error) {
+                console.error('❌ Antrenman ekleme hatası:', error);
+                showMessage('Antrenman eklenirken hata oluştu: ' + error.message, 'error');
+            }
+        }
+        
+        // Antrenmanları yükle
+        async function loadAntrenmanlar() {
+            if (!authToken) {
+                document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Lütfen önce giriş yapın!</p>';
+                return;
+            }
+            
+            try {
+                document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>';
+                
+                console.log('📤 Antrenmanlar yükleniyor:', `${API_ANTRENMAN_URL}/Panel`);
+                
+                const response = await fetch(`${API_ANTRENMAN_URL}/Panel`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ API Hatası: HTTP 404: Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_ANTRENMAN_URL}/Panel`);
+                        document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.</p>';
+                        return;
+                    }
+                    
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    console.error('❌ Antrenman yükleme hatası:', errorData);
+                    document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Antrenmanlar yüklenirken hata oluştu: ' + (errorData.message || 'Bilinmeyen hata') + '</p>';
+                    return;
+                }
+                
+                const antrenmanlar = await response.json();
+                console.log('✅ Antrenmanlar yüklendi:', antrenmanlar);
+                
+                if (!antrenmanlar || antrenmanlar.length === 0) {
+                    document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Henüz antrenman kaydınız bulunmamaktadır.</p>';
+                    return;
+                }
+                
+                // Antrenmanları listele
+                let html = '<div style="display: grid; gap: 15px;">';
+                antrenmanlar.forEach(antrenman => {
+                    const tarih = new Date(antrenman.Tarih || antrenman.tarih);
+                    const tarihStr = tarih.toLocaleDateString('tr-TR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    html += `
+                        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                <h5 style="margin: 0; color: #333; font-size: 16px;">${antrenman.AntrenmanAdi || antrenman.antrenmanAdi || '-'}</h5>
+                                <span style="font-size: 12px; color: #666;">${tarihStr}</span>
+                            </div>
+                            ${antrenman.AntrenmanTipi || antrenman.antrenmanTipi ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Tip:</strong> ${antrenman.AntrenmanTipi || antrenman.antrenmanTipi}</p>` : ''}
+                            ${antrenman.Sure || antrenman.sure ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Süre:</strong> ${antrenman.Sure || antrenman.sure} dakika</p>` : ''}
+                            ${antrenman.KaloriYakilan || antrenman.kaloriYakilan ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Kalori:</strong> ${antrenman.KaloriYakilan || antrenman.kaloriYakilan}</p>` : ''}
+                            ${antrenman.Aciklama || antrenman.aciklama ? `<p style="margin: 5px 0; color: #666; font-size: 14px;">${antrenman.Aciklama || antrenman.aciklama}</p>` : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                document.getElementById('antrenmanListesi').innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ Antrenman yükleme hatası:', error);
+                document.getElementById('antrenmanListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Antrenmanlar yüklenirken hata oluştu: ' + error.message + '</p>';
+            }
+        }
+        
+        // Beslenme ekle
+        async function addBeslenme() {
+            if (!authToken) {
+                showMessage('Lütfen önce giriş yapın!', 'error');
+                return;
+            }
+            
+            const beslenme = {
+                YemekAdi: document.getElementById('yemekAdi').value.trim(),
+                Ogun: document.getElementById('ogun').value,
+                Kalori: parseFloat(document.getElementById('kalori').value || 0),
+                Protein: parseFloat(document.getElementById('protein').value || 0),
+                Karbonhidrat: parseFloat(document.getElementById('karbonhidrat').value || 0),
+                Yag: parseFloat(document.getElementById('yag').value || 0),
+                Aciklama: document.getElementById('beslenmeAciklama').value.trim()
+            };
+            
+            // Validasyon
+            if (!beslenme.YemekAdi) {
+                showMessage('Lütfen yemek adı girin!', 'error');
+                return;
+            }
+            
+            try {
+                console.log('📤 Beslenme ekleniyor:', beslenme);
+                
+                const response = await fetch(`${API_BESLENME_URL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(beslenme)
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_BESLENME_URL}`);
+                        showMessage('API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.', 'error');
+                        return;
+                    }
+                    
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    console.error('❌ Beslenme ekleme hatası:', errorData);
+                    showMessage('Beslenme kaydı eklenirken hata oluştu: ' + (errorData.message || 'Bilinmeyen hata'), 'error');
+                    return;
+                }
+                
+                const data = await response.json();
+                console.log('✅ Beslenme başarıyla eklendi:', data);
+                showMessage('✅ Beslenme kaydı başarıyla eklendi!', 'success');
+                
+                // Formu temizle
+                document.getElementById('yemekAdi').value = '';
+                document.getElementById('ogun').value = '';
+                document.getElementById('kalori').value = '';
+                document.getElementById('protein').value = '';
+                document.getElementById('karbonhidrat').value = '';
+                document.getElementById('yag').value = '';
+                document.getElementById('beslenmeAciklama').value = '';
+                
+                // Listeyi yenile
+                await loadBeslenme();
+                
+            } catch (error) {
+                console.error('❌ Beslenme ekleme hatası:', error);
+                showMessage('Beslenme kaydı eklenirken hata oluştu: ' + error.message, 'error');
+            }
+        }
+        
+        // Beslenme kayıtlarını yükle
+        async function loadBeslenme() {
+            if (!authToken) {
+                document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Lütfen önce giriş yapın!</p>';
+                return;
+            }
+            
+            try {
+                document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>';
+                
+                console.log('📤 Beslenme kayıtları yükleniyor:', `${API_BESLENME_URL}/Panel`);
+                
+                const response = await fetch(`${API_BESLENME_URL}/Panel`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_BESLENME_URL}/Panel`);
+                        document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.</p>';
+                        return;
+                    }
+                    
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    console.error('❌ Beslenme yükleme hatası:', errorData);
+                    document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Beslenme kayıtları yüklenirken hata oluştu: ' + (errorData.message || 'Bilinmeyen hata') + '</p>';
+                    return;
+                }
+                
+                const beslenmeKayitlari = await response.json();
+                console.log('✅ Beslenme kayıtları yüklendi:', beslenmeKayitlari);
+                
+                if (!beslenmeKayitlari || beslenmeKayitlari.length === 0) {
+                    document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Henüz beslenme kaydınız bulunmamaktadır.</p>';
+                    return;
+                }
+                
+                // Beslenme kayıtlarını listele
+                let html = '<div style="display: grid; gap: 15px;">';
+                beslenmeKayitlari.forEach(beslenme => {
+                    const tarih = new Date(beslenme.Tarih || beslenme.tarih);
+                    const tarihStr = tarih.toLocaleDateString('tr-TR', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    html += `
+                        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                <h5 style="margin: 0; color: #333; font-size: 16px;">${beslenme.YemekAdi || beslenme.yemekAdi || '-'}</h5>
+                                <span style="font-size: 12px; color: #666;">${tarihStr}</span>
+                            </div>
+                            ${beslenme.Ogun || beslenme.ogun ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Öğün:</strong> ${beslenme.Ogun || beslenme.ogun}</p>` : ''}
+                            ${beslenme.Kalori || beslenme.kalori ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Kalori:</strong> ${beslenme.Kalori || beslenme.kalori}</p>` : ''}
+                            ${(beslenme.Protein || beslenme.protein) ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Protein:</strong> ${beslenme.Protein || beslenme.protein} g</p>` : ''}
+                            ${(beslenme.Karbonhidrat || beslenme.karbonhidrat) ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Karbonhidrat:</strong> ${beslenme.Karbonhidrat || beslenme.karbonhidrat} g</p>` : ''}
+                            ${(beslenme.Yag || beslenme.yag) ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Yağ:</strong> ${beslenme.Yag || beslenme.yag} g</p>` : ''}
+                            ${beslenme.Aciklama || beslenme.aciklama ? `<p style="margin: 5px 0; color: #666; font-size: 14px;">${beslenme.Aciklama || beslenme.aciklama}</p>` : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                document.getElementById('beslenmeListesi').innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ Beslenme yükleme hatası:', error);
+                document.getElementById('beslenmeListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Beslenme kayıtları yüklenirken hata oluştu: ' + error.message + '</p>';
+            }
+        }
+        
+        // Backend health check
+        async function checkHedefBackendHealth() {
+            try {
+                const healthResponse = await fetch(`${API_HEDEF_URL}/health`);
+                if (healthResponse.ok) {
+                    const healthData = await healthResponse.json();
+                    console.log('✅ Backend health check başarılı:', healthData);
+                    return true;
+                } else {
+                    console.error('❌ Backend health check başarısız:', healthResponse.status);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Backend health check hatası:', error);
+                return false;
+            }
+        }
+        
+        // Hedef ekle
+        async function addHedef() {
+            if (!authToken) {
+                showMessage('Lütfen önce giriş yapın!', 'error');
+                return;
+            }
+            
+            // Backend health check
+            console.log('🔍 Backend health check yapılıyor...');
+            const isBackendHealthy = await checkHedefBackendHealth();
+            if (!isBackendHealthy) {
+                showMessage('❌ Backend API çalışmıyor! Lütfen backend\'in çalıştığından emin olun (http://localhost:7043)', 'error');
+                console.error('❌ Backend URL kontrolü:', `${API_HEDEF_URL}/health`);
+                return;
+            }
+            
+            // Form değerlerini al
+            const hedefAdi = document.getElementById('hedefAdi').value.trim();
+            const hedefTuru = document.getElementById('hedefKategori').value; // Hedef Türü = Kategori
+            const hedefDeger = document.getElementById('hedefDeger').value ? parseFloat(document.getElementById('hedefDeger').value) : null;
+            const baslangicTarihi = document.getElementById('hedefBaslangicTarihi').value;
+            const hedefTarihi = document.getElementById('hedefTarihi').value;
+            const notlar = document.getElementById('hedefAciklama').value.trim(); // Notlar = Açıklama
+            const birim = document.getElementById('hedefBirim').value.trim();
+            
+            // Validasyon
+            if (!hedefAdi) {
+                showMessage('Lütfen hedef adı girin!', 'error');
+                return;
+            }
+            
+            if (!hedefTuru) {
+                showMessage('Lütfen hedef türü seçin!', 'error');
+                return;
+            }
+            
+            if (!hedefTarihi) {
+                showMessage('Lütfen hedef tarihi seçin!', 'error');
+                return;
+            }
+            
+            // Hedef objesini oluştur - backend modeline uygun
+            // Tarihleri string olarak gönder (YYYY-MM-DD formatı) - ASP.NET Core otomatik parse eder
+            const hedef = {
+                HedefAdi: hedefAdi,
+                Kategori: hedefTuru || null, // Hedef Türü -> Kategori olarak gönder
+                HedefDeger: hedefDeger,
+                HedefTarihi: hedefTarihi || null, // YYYY-MM-DD formatında string
+                BaslangicTarihi: baslangicTarihi || null, // YYYY-MM-DD formatında string (boşsa backend bugünü kullanır)
+                Aciklama: notlar || null, // Notlar -> Açıklama
+                Birim: birim || null
+            };
+            
+            try {
+                // Gönderilecek veriyi detaylı logla
+                console.log('📤 Hedef ekleniyor:', hedef);
+                console.log('📤 JSON:', JSON.stringify(hedef, null, 2));
+                console.log('📤 Token var mı:', authToken ? 'Evet' : 'Hayır');
+                console.log('📤 Token (ilk 20 karakter):', authToken ? authToken.substring(0, 20) + '...' : 'Yok');
+                console.log('📤 Endpoint URL:', `${API_HEDEF_URL}`);
+                console.log('📤 Full request URL:', `${API_HEDEF_URL}`);
+                
+                const response = await fetch(`${API_HEDEF_URL}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(hedef)
+                });
+                
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response ok:', response.ok);
+                console.log('📥 Response statusText:', response.statusText);
+                console.log('📥 Response URL:', response.url);
+                console.log('📥 Response headers:', [...response.headers.entries()]);
+                
+                if (!response.ok) {
+                    console.error('❌ Response NOT OK!');
+                    console.error('❌ Status:', response.status);
+                    console.error('❌ StatusText:', response.statusText);
+                    console.error('❌ URL:', response.url);
+                    
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_HEDEF_URL}`);
+                        showMessage('API endpoint bulunamadı (404). Backend çalışıyor mu? URL: ' + API_HEDEF_URL, 'error');
+                        return;
+                    }
+                    
+                    let errorData = null;
+                    let responseText = '';
+                    try {
+                        responseText = await response.text();
+                        console.error('❌ Raw Response Text:', responseText);
+                        console.error('❌ Response Text Length:', responseText.length);
+                        
+                        if (responseText && responseText.trim().length > 0) {
+                            try {
+                                errorData = JSON.parse(responseText);
+                                console.error('❌ Parsed Error Data:', errorData);
+                            } catch (parseError) {
+                                console.error('❌ JSON Parse Error:', parseError);
+                                console.error('❌ Response Text (first 500 chars):', responseText.substring(0, 500));
+                                errorData = { 
+                                    message: `HTTP ${response.status}: ${response.statusText}`, 
+                                    rawResponse: responseText.substring(0, 500),
+                                    parseError: parseError.message
+                                };
+                            }
+                        } else {
+                            errorData = { message: `HTTP ${response.status}: ${response.statusText} (Boş yanıt)` };
+                        }
+                    } catch (e) {
+                        console.error('❌ Response Text Okuma Hatası:', e);
+                        errorData = { 
+                            message: `HTTP ${response.status}: ${response.statusText}`, 
+                            readError: e.message 
+                        };
+                    }
+                    
+                    console.error('❌ Final Error Data:', JSON.stringify(errorData, null, 2));
+                    
+                    // Detaylı hata mesajı oluştur
+                    let errorMessage = 'Bilinmeyen hata';
+                    if (errorData) {
+                        errorMessage = errorData.message || errorData.error || 'Bilinmeyen hata';
+                        if (errorData.innerException) {
+                            errorMessage += ' | Inner: ' + errorData.innerException;
+                        }
+                        if (errorData.stackTrace) {
+                            console.error('❌ StackTrace:', errorData.stackTrace);
+                        }
+                    }
+                    
+                    console.error('❌ TAM HATA MESAJI:', errorMessage);
+                    showMessage('Hedef eklenemedi! Status: ' + response.status + ' | Hata: ' + errorMessage, 'error');
+                    return;
+                }
+                
+                let data;
+                try {
+                    const responseText = await response.text();
+                    console.log('📥 Response text:', responseText);
+                    data = responseText ? JSON.parse(responseText) : {};
+                    console.log('📥 Response data:', data);
+                } catch (jsonError) {
+                    console.error('❌ JSON parse hatası:', jsonError);
+                    showMessage('Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.', 'error');
+                    return;
+                }
+                
+                console.log('✅ Hedef başarıyla eklendi:', data);
+                console.log('✅ Hedef ID:', data.Id || data.id);
+                showMessage('✅ Hedef başarıyla eklendi!', 'success');
+                
+                // Formu temizle
+                document.getElementById('hedefAdi').value = '';
+                document.getElementById('hedefKategori').value = '';
+                document.getElementById('hedefDeger').value = '';
+                document.getElementById('hedefBaslangicTarihi').value = '';
+                document.getElementById('hedefTarihi').value = '';
+                document.getElementById('hedefAciklama').value = '';
+                document.getElementById('hedefBirim').value = '';
+                
+                // Listeyi yenile
+                await loadHedefler();
+                
+            } catch (error) {
+                console.error('❌ Hedef ekleme hatası:', error);
+                showMessage('Hedef eklenirken hata oluştu: ' + error.message, 'error');
+            }
+        }
+        
+        // Hedefleri yükle
+        async function loadHedefler() {
+            if (!authToken) {
+                document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Lütfen önce giriş yapın!</p>';
+                return;
+            }
+            
+            try {
+                document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Yükleniyor...</p>';
+                
+                console.log('📤 Hedefler yükleniyor:', `${API_HEDEF_URL}/Panel`);
+                
+                const response = await fetch(`${API_HEDEF_URL}/Panel`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                });
+                
+                console.log('📥 Response status:', response.status);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_HEDEF_URL}/Panel`);
+                        document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.</p>';
+                        return;
+                    }
+                    
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    console.error('❌ Hedef yükleme hatası:', errorData);
+                    document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Hedefler yüklenirken hata oluştu: ' + (errorData.message || 'Bilinmeyen hata') + '</p>';
+                    return;
+                }
+                
+                const hedefler = await response.json();
+                console.log('✅ Hedefler yüklendi:', hedefler);
+                
+                if (!hedefler || hedefler.length === 0) {
+                    document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Henüz hedefiniz bulunmamaktadır.</p>';
+                    return;
+                }
+                
+                // Hedefleri listele
+                let html = '<div style="display: grid; gap: 15px;">';
+                hedefler.forEach(hedef => {
+                    const baslangicTarihi = new Date(hedef.BaslangicTarihi || hedef.baslangicTarihi);
+                    const hedefTarihi = new Date(hedef.HedefTarihi || hedef.hedefTarihi);
+                    const baslangicStr = baslangicTarihi.toLocaleDateString('tr-TR');
+                    const hedefTarihiStr = hedefTarihi.toLocaleDateString('tr-TR');
+                    const tamamlandi = hedef.Tamamlandi || hedef.tamamlandi || false;
+                    const durumClass = tamamlandi ? 'success' : 'warning';
+                    const durumText = tamamlandi ? '✅ Tamamlandı' : '⏳ Devam Ediyor';
+                    
+                    html += `
+                        <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                                <h5 style="margin: 0; color: #333; font-size: 16px;">${hedef.HedefAdi || hedef.hedefAdi || '-'}</h5>
+                                <span style="font-size: 12px; color: ${tamamlandi ? '#28a745' : '#ffc107'}; font-weight: 600;">${durumText}</span>
+                            </div>
+                            ${hedef.Kategori || hedef.kategori ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Kategori:</strong> ${hedef.Kategori || hedef.kategori}</p>` : ''}
+                            <p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Başlangıç:</strong> ${baslangicStr}</p>
+                            <p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Hedef Tarihi:</strong> ${hedefTarihiStr}</p>
+                            ${(hedef.HedefDeger || hedef.hedefDeger) ? `<p style="margin: 5px 0; color: #666; font-size: 14px;"><strong>Hedef Değer:</strong> ${hedef.HedefDeger || hedef.hedefDeger} ${hedef.Birim || hedef.birim || ''}</p>` : ''}
+                            ${hedef.Aciklama || hedef.aciklama ? `<p style="margin: 5px 0; color: #666; font-size: 14px;">${hedef.Aciklama || hedef.aciklama}</p>` : ''}
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                
+                document.getElementById('hedefListesi').innerHTML = html;
+                
+            } catch (error) {
+                console.error('❌ Hedef yükleme hatası:', error);
+                document.getElementById('hedefListesi').innerHTML = '<p style="text-align: center; color: #dc3545; padding: 20px;">Hedefler yüklenirken hata oluştu: ' + error.message + '</p>';
+            }
+        }
+        
+        // Sayfa yüklendiğinde tüm verileri yükle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Üye bilgileri yüklendikten sonra tüm verileri yükle
+            setTimeout(() => {
+                if (authToken) {
+                    loadAntrenmanlar();
+                    loadBeslenme();
+                    loadHedefler();
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Proje Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            font-size: 36px;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .actions-section {
+            margin-bottom: 30px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .member-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .member-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .member-info {
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .member-info-label {
+            color: #999;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+        
+        .member-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .package-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        
+        .package-gunluk {
+            background: #ffc107;
+            color: #856404;
+        }
+        
+        .package-haftalik {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .package-aylik {
+            background: #28a745;
+            color: white;
+        }
+        
+        .package-yillik {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .package-none {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .package-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .package-info-item {
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .package-info-label {
+            color: #999;
+            font-size: 11px;
+        }
+        
+        .package-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🏃 Spor Proje Admin</h1>
+            </div>
+            <div>
+                <p id="adminName" style="margin-bottom: 10px; color: #666;">Admin</p>
+                <button class="logout-btn" onclick="logout()">Çıkış Yap</button>
+            </div>
+        </div>
+        
+        <div id="message" class="message"></div>
+        
+        <div class="stats-section">
+            <div class="stat-card">
+                <h3 id="totalMembers">0</h3>
+                <p>Toplam Üye</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="activePackages">0</h3>
+                <p>Aktif Paket</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="expiredPackages">0</h3>
+                <p>Süresi Dolmuş</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="noPackage">0</h3>
+                <p>Paket Yok</p>
+            </div>
+        </div>
+        
+        <div class="actions-section">
+            <button class="btn btn-primary" onclick="loadMembers()">🔄 Üyeleri Yenile</button>
+            <button class="btn btn-success" onclick="ensurePaketColumns().then(() => { showMessage('Paket kolonları kontrol edildi!', 'success'); loadMembers(); })">🔧 Paket Kolonlarını Kontrol Et</button>
+        </div>
+        
+        <div class="section-title">
+            <span>👥</span>
+            <span>Üyeler</span>
+        </div>
+        
+        <div id="loading" class="loading">Yükleniyor...</div>
+        
+        <div id="membersGrid" class="members-grid" style="display: none;">
+        </div>
+        
+        <div id="noData" class="no-data" style="display: none;">
+            <p>Henüz üye bulunmamaktadır.</p>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api';
+        let authToken = '';
+        
+        // Sayfa yüklendiğinde
+        window.onload = async function() {
+            // Token kontrolü
+            authToken = localStorage.getItem('adminToken');
+            const adminInfo = localStorage.getItem('adminInfo');
+            
+            if (!authToken) {
+                showMessage('Lütfen önce giriş yapın!', 'error');
+                setTimeout(() => {
+                    window.location.href = 'admin_login_test.html';
+                }, 2000);
+                return;
+            }
+            
+            // Admin bilgilerini göster
+            if (adminInfo) {
+                try {
+                    const admin = JSON.parse(adminInfo);
+                    console.log('📥 Admin bilgileri parse edildi:', admin);
+                    
+                    // Hem camelCase hem PascalCase destekle
+                    const ad = admin.ad || admin.Ad || '';
+                    const soyad = admin.soyad || admin.Soyad || '';
+                    
+                    console.log('📥 Ad:', ad, 'Soyad:', soyad);
+                    
+                    if (ad && soyad) {
+                        document.getElementById('adminName').textContent = `${ad} ${soyad}`;
+                        console.log('✅ Admin adı gösterildi:', `${ad} ${soyad}`);
+                    } else {
+                        console.warn('⚠️ Admin bilgisi yok veya geçersiz:', admin);
+                        document.getElementById('adminName').textContent = 'Admin';
+                    }
+                } catch (e) {
+                    console.error('❌ Admin bilgisi parse edilemedi:', e);
+                    console.error('❌ Raw adminInfo:', adminInfo);
+                    document.getElementById('adminName').textContent = 'Admin';
+                }
+            } else {
+                console.warn('⚠️ localStorage\'da adminInfo bulunamadı');
+                document.getElementById('adminName').textContent = 'Admin';
+            }
+            
+            // Önce paket kolonlarını kontrol et ve ekle
+            await ensurePaketColumns();
+            
+            // Üyeleri yükle
+            loadMembers();
+        };
+        
+        // Paket kolonlarının var olduğundan emin ol
+        async function ensurePaketColumns() {
+            try {
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (authToken) {
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+                
+                const url = `${API_BASE_URL}/Database/add-paket-columns`;
+                console.log('📤 Paket kolonları kontrol ediliyor:', url);
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers
+                });
+                
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response ok:', response.ok);
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('📥 Response data:', result);
+                    if (result.totalAdded > 0) {
+                        console.log('✅ Paket kolonları eklendi:', result.addedColumns);
+                        return true;
+                    } else {
+                        console.log('ℹ️ Paket kolonları zaten mevcut');
+                        return true;
+                    }
+                } else {
+                    // 404 hatası için özel mesaj
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ API Hatası: HTTP 404: Not Found');
+                        console.error('❌ Endpoint bulunamadı:', url);
+                        console.error('❌ Lütfen backend API\'nin çalıştığından emin olun');
+                        // 404 hatası kritik değil, devam et
+                        return false;
+                    }
+                    
+                    let errorData;
+                    try {
+                        errorData = await response.json();
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                    }
+                    console.error('❌ API Hatası:', response.status, errorData);
+                    console.warn('Paket kolonları eklenirken hata:', errorData);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Paket kolonları kontrol edilirken hata:', error);
+                console.error('❌ Hata detayı:', error.message);
+                console.error('❌ Stack trace:', error.stack);
+                return false;
+            }
+        }
+        
+        // Backend sağlık kontrolü
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Uye/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                return response.ok;
+            } catch (error) {
+                console.error('❌ Backend sağlık kontrolü başarısız:', error);
+                return false;
+            }
+        }
+        
+        // Üyeleri yükle
+        async function loadMembers() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('membersGrid').style.display = 'none';
+                document.getElementById('noData').style.display = 'none';
+                
+                console.log('📡 API çağrısı başlatılıyor...');
+                console.log('📡 API URL:', `${API_BASE_URL}/Uye`);
+                console.log('📡 Token var mı?', !!authToken);
+                
+                // Backend sağlık kontrolü
+                const isBackendHealthy = await checkBackendHealth();
+                if (!isBackendHealthy) {
+                    console.error('❌ Backend sağlık kontrolü başarısız!');
+                    console.error('❌ Backend URL:', API_BASE_URL);
+                    console.error('❌ Lütfen backend API\'nin çalıştığından emin olun');
+                    showMessage('Backend API\'ye bağlanılamıyor! Lütfen backend\'in çalıştığından emin olun. URL: ' + API_BASE_URL, 'error');
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                const headers = {
+                    'Content-Type': 'application/json'
+                };
+                if (authToken) {
+                    headers['Authorization'] = `Bearer ${authToken}`;
+                }
+                
+                console.log('📡 Request headers:', headers);
+                
+                let response;
+                try {
+                    response = await fetch(`${API_BASE_URL}/Uye`, {
+                        method: 'GET',
+                        headers: headers,
+                        mode: 'cors',
+                        cache: 'no-cache'
+                    });
+                } catch (fetchError) {
+                    console.error('❌ Fetch hatası:', fetchError);
+                    console.error('❌ Hata tipi:', fetchError.name);
+                    console.error('❌ Hata mesajı:', fetchError.message);
+                    console.error('❌ Stack trace:', fetchError.stack);
+                    
+                    // "Failed to fetch" hatası için özel mesaj
+                    if (fetchError.message === 'Failed to fetch' || fetchError.name === 'TypeError') {
+                        console.error('❌ Backend\'e bağlanılamıyor!');
+                        console.error('❌ Olası nedenler:');
+                        console.error('   1. Backend API çalışmıyor olabilir');
+                        console.error('   2. Yanlış URL veya port');
+                        console.error('   3. CORS hatası (backend CORS ayarlarını kontrol edin)');
+                        console.error('   4. Firewall veya network sorunu');
+                        showMessage('Backend API\'ye bağlanılamıyor! Lütfen backend\'in çalıştığından emin olun. URL: ' + API_BASE_URL, 'error');
+                    } else {
+                        showMessage('Bağlantı hatası: ' + fetchError.message, 'error');
+                    }
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                console.log('📥 Response alındı:', response.status, response.statusText);
+                console.log('📥 Response OK?', response.ok);
+                console.log('📥 Response URL:', response.url);
+                
+                if (!response.ok) {
+                    // 404 hatası için özel mesaj
+                    if (response.status === 404) {
+                        console.error('❌ API Status: 404 Not Found');
+                        console.error('❌ API Hatası: HTTP 404: Not Found');
+                        console.error('❌ Endpoint bulunamadı:', `${API_BASE_URL}/Uye`);
+                        console.error('❌ Lütfen backend API\'nin çalıştığından emin olun');
+                        showMessage('API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun. URL: ' + API_BASE_URL, 'error');
+                        document.getElementById('loading').style.display = 'none';
+                        return;
+                    }
+                    
+                    let errorData;
+                    let responseText = '';
+                    try {
+                        responseText = await response.text();
+                        console.error('❌ Response text:', responseText);
+                        if (responseText) {
+                            errorData = JSON.parse(responseText);
+                        } else {
+                            errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+                        }
+                    } catch (e) {
+                        console.error('❌ JSON parse hatası:', e);
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}`, rawResponse: responseText };
+                    }
+                    console.error('❌ API Hatası:', response.status, errorData);
+                    
+                    if (response.status === 401) {
+                        showMessage('Oturum süreniz dolmuş. Lütfen tekrar giriş yapın.', 'error');
+                        setTimeout(() => {
+                            logout();
+                        }, 2000);
+                        document.getElementById('loading').style.display = 'none';
+                        return;
+                    }
+                    showMessage('API Hatası: ' + (errorData.message || 'Üyeler yüklenemedi'), 'error');
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                let uyeler;
+                try {
+                    const responseText = await response.text();
+                    console.log('📥 Response text:', responseText);
+                    uyeler = responseText ? JSON.parse(responseText) : [];
+                    console.log('📥 Parsed data:', uyeler);
+                } catch (jsonError) {
+                    console.error('❌ JSON parse hatası:', jsonError);
+                    showMessage('Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.', 'error');
+                    document.getElementById('loading').style.display = 'none';
+                    return;
+                }
+                
+                console.log('✅ Üyeler yüklendi:', uyeler);
+                console.log('✅ Toplam üye sayısı:', uyeler.length);
+                
+                // Her üyenin paket bilgilerini kontrol et
+                uyeler.forEach((uye, index) => {
+                    const uyelikTuru = uye.UyelikTuru !== undefined ? uye.UyelikTuru : (uye.uyelikTuru !== undefined ? uye.uyelikTuru : null);
+                    const paketBaslangic = uye.PaketBaslangicTarihi || uye.paketBaslangicTarihi;
+                    const paketBitis = uye.PaketBitisTarihi || uye.paketBitisTarihi;
+                    
+                    console.log(`Üye ${index + 1}:`, {
+                        ad: uye.Ad || uye.ad,
+                        uyelikTuru: uyelikTuru,
+                        paketBaslangic: paketBaslangic,
+                        paketBitis: paketBitis,
+                        raw: uye
+                    });
+                });
+                
+                document.getElementById('loading').style.display = 'none';
+                
+                if (!uyeler || uyeler.length === 0) {
+                    document.getElementById('noData').style.display = 'block';
+                    updateStats(uyeler || []);
+                    return;
+                }
+                
+                // Kartları oluştur
+                const grid = document.getElementById('membersGrid');
+                grid.innerHTML = '';
+                
+                uyeler.forEach(uye => {
+                    const card = createMemberCard(uye);
+                    grid.appendChild(card);
+                });
+                
+                document.getElementById('membersGrid').style.display = 'grid';
+                updateStats(uyeler);
+                
+            } catch (error) {
+                console.error('❌ Genel hata:', error);
+                console.error('❌ Hata tipi:', error.name);
+                console.error('❌ Hata mesajı:', error.message);
+                console.error('❌ Stack trace:', error.stack);
+                document.getElementById('loading').style.display = 'none';
+                
+                let errorMessage = 'Üyeler yüklenirken hata oluştu: ' + error.message;
+                if (error.message === 'Failed to fetch') {
+                    errorMessage = 'Backend API\'ye bağlanılamıyor! Lütfen backend\'in çalıştığından emin olun. URL: ' + API_BASE_URL;
+                }
+                showMessage(errorMessage, 'error');
+            }
+        }
+        
+        // Üye kartı oluştur
+        function createMemberCard(uye) {
+            const card = document.createElement('div');
+            card.className = 'member-card';
+            
+            // Property isimleri hem PascalCase hem camelCase destekliyoruz
+            const id = uye.Id || uye.id || '-';
+            const ad = uye.Ad || uye.ad || '';
+            const soyad = uye.Soyad || uye.soyad || '';
+            const email = uye.Email || uye.email || '';
+            const telefon = uye.Telefon || uye.telefon || '';
+            const uyeNumarasi = uye.UyeNumarasi || uye.uyeNumarasi || '';
+            
+            // Paket bilgilerini kontrol et - önce PascalCase, sonra camelCase
+            let uyelikTuru = null;
+            let paketBaslangicTarihi = null;
+            let paketBitisTarihi = null;
+            
+            if (uye.UyelikTuru !== undefined && uye.UyelikTuru !== null) {
+                uyelikTuru = uye.UyelikTuru;
+            } else if (uye.uyelikTuru !== undefined && uye.uyelikTuru !== null) {
+                uyelikTuru = uye.uyelikTuru;
+            }
+            
+            if (uye.PaketBaslangicTarihi) {
+                paketBaslangicTarihi = uye.PaketBaslangicTarihi;
+            } else if (uye.paketBaslangicTarihi) {
+                paketBaslangicTarihi = uye.paketBaslangicTarihi;
+            }
+            
+            if (uye.PaketBitisTarihi) {
+                paketBitisTarihi = uye.PaketBitisTarihi;
+            } else if (uye.paketBitisTarihi) {
+                paketBitisTarihi = uye.paketBitisTarihi;
+            }
+            
+            // Debug log
+            if (uyelikTuru) {
+                console.log(`Kart oluşturuluyor - ${ad} ${soyad}: Paket=${uyelikTuru}, Başlangıç=${paketBaslangicTarihi}, Bitiş=${paketBitisTarihi}`);
+            }
+            
+            // Paket bilgileri
+            const paketAdi = getPaketAdi(uyelikTuru);
+            const paketClass = getPaketClass(uyelikTuru);
+            
+            // Tarih formatlama
+            let baslangicTarihi = '-';
+            let bitisTarihi = '-';
+            
+            if (paketBaslangicTarihi) {
+                try {
+                    const tarih = paketBaslangicTarihi instanceof Date 
+                        ? paketBaslangicTarihi 
+                        : new Date(paketBaslangicTarihi);
+                    if (!isNaN(tarih.getTime())) {
+                        baslangicTarihi = tarih.toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Başlangıç tarihi parse edilemedi:', paketBaslangicTarihi);
+                }
+            }
+            
+            if (paketBitisTarihi) {
+                try {
+                    const tarih = paketBitisTarihi instanceof Date 
+                        ? paketBitisTarihi 
+                        : new Date(paketBitisTarihi);
+                    if (!isNaN(tarih.getTime())) {
+                        bitisTarihi = tarih.toLocaleDateString('tr-TR', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Bitiş tarihi parse edilemedi:', paketBitisTarihi);
+                }
+            }
+            
+            // Durum kontrolü
+            let durum = '';
+            let durumClass = '';
+            if (!uyelikTuru) {
+                durum = 'Paket Yok';
+                durumClass = 'package-none';
+            } else if (paketBitisTarihi) {
+                const bitis = new Date(paketBitisTarihi);
+                const simdi = new Date();
+                if (bitis > simdi) {
+                    const kalanGun = Math.ceil((bitis - simdi) / (1000 * 60 * 60 * 24));
+                    durum = `${kalanGun} gün kaldı`;
+                    durumClass = 'package-aylik';
+                } else {
+                    durum = 'Süresi Dolmuş';
+                    durumClass = 'package-none';
+                }
+            } else {
+                durum = 'Aktif';
+                durumClass = 'package-aylik';
+            }
+            
+            card.innerHTML = `
+                <div class="member-name">${ad} ${soyad}</div>
+                
+                <div class="member-info">
+                    <div class="member-info-label">UYE ID</div>
+                    <div class="member-info-value">${uyeNumarasi}</div>
+                </div>
+                
+                <div class="member-info">
+                    <div class="member-info-label">Email</div>
+                    <div class="member-info-value">${email || '-'}</div>
+                </div>
+                
+                <div class="member-info">
+                    <div class="member-info-label">Telefon</div>
+                    <div class="member-info-value">${telefon || '-'}</div>
+                </div>
+                
+                <div class="package-info">
+                    <div class="member-info">
+                        <div class="member-info-label">Paket</div>
+                        <div class="member-info-value">
+                            ${uyelikTuru 
+                                ? `<span class="package-badge ${paketClass}">${paketAdi}</span>` 
+                                : '<span class="package-badge package-none">Yok</span>'
+                            }
+                        </div>
+                    </div>
+                    
+                    ${uyelikTuru ? `
+                        <div class="package-info-item">
+                            <div class="package-info-label">Başlangıç Tarihi</div>
+                            <div class="package-info-value">${baslangicTarihi}</div>
+                        </div>
+                        
+                        <div class="package-info-item">
+                            <div class="package-info-label">Bitiş Tarihi</div>
+                            <div class="package-info-value">${bitisTarihi}</div>
+                        </div>
+                        
+                        <div class="package-info-item">
+                            <div class="package-info-label">Durum</div>
+                            <div class="package-info-value">
+                                <span class="package-badge ${durumClass}">${durum}</span>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            return card;
+        }
+        
+        // Paket adı
+        function getPaketAdi(uyelikTuru) {
+            if (!uyelikTuru) return 'Yok';
+            const paketler = {
+                1: 'Günlük',
+                2: 'Haftalık',
+                3: 'Aylık',
+                4: 'Yıllık'
+            };
+            return paketler[uyelikTuru] || 'Bilinmiyor';
+        }
+        
+        // Paket class
+        function getPaketClass(uyelikTuru) {
+            if (!uyelikTuru) return 'package-none';
+            const classes = {
+                1: 'package-gunluk',
+                2: 'package-haftalik',
+                3: 'package-aylik',
+                4: 'package-yillik'
+            };
+            return classes[uyelikTuru] || 'package-none';
+        }
+        
+        // İstatistikleri güncelle
+        function updateStats(uyeler) {
+            if (!uyeler || uyeler.length === 0) {
+                document.getElementById('totalMembers').textContent = '0';
+                document.getElementById('activePackages').textContent = '0';
+                document.getElementById('expiredPackages').textContent = '0';
+                document.getElementById('noPackage').textContent = '0';
+                return;
+            }
+            
+            const total = uyeler.length;
+            let activePackages = 0;
+            let expiredPackages = 0;
+            let noPackage = 0;
+            
+            const simdi = new Date();
+            
+            uyeler.forEach(uye => {
+                const uyelikTuru = uye.UyelikTuru !== undefined ? uye.UyelikTuru : (uye.uyelikTuru !== undefined ? uye.uyelikTuru : null);
+                const paketBitisTarihi = uye.PaketBitisTarihi || uye.paketBitisTarihi;
+                
+                if (!uyelikTuru) {
+                    noPackage++;
+                } else if (paketBitisTarihi) {
+                    const bitis = new Date(paketBitisTarihi);
+                    if (bitis > simdi) {
+                        activePackages++;
+                    } else {
+                        expiredPackages++;
+                    }
+                } else {
+                    activePackages++;
+                }
+            });
+            
+            document.getElementById('totalMembers').textContent = total;
+            document.getElementById('activePackages').textContent = activePackages;
+            document.getElementById('expiredPackages').textContent = expiredPackages;
+            document.getElementById('noPackage').textContent = noPackage;
+        }
+        
+        // Mesaj göster
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Çıkış yap
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminInfo');
+            window.location.href = 'admin_login_test.html';
+        }
+    </script>
+</body>
+</html>

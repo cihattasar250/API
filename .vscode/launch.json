@@ -1,0 +1,44 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/spor_proje_api/bin/Debug/net8.0/spor_proje_api.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/spor_proje_api",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        },
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Launch Edge (http://localhost:7043)",
+            "url": "http://localhost:7043",
+            "webRoot": "${workspaceFolder}/spor_proje_api",
+            "sourceMaps": false,
+            "sourceMapPathOverrides": {
+                "webpack:///./*": "${webRoot}/*"
+            },
+            "runtimeArgs": [
+                "--remote-debugging-port=9222"
+            ]
+        }
+    ]
+}

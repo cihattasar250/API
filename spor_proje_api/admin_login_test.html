@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔐 Admin Giriş & Kayıt Test Sayfası</h2>
+        
+        <!-- Kayıt Formu -->
+        <div style="background: #e9ecef; padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+            <h3 style="margin-top: 0;">✨ Yeni Admin Kaydı</h3>
+            <form id="adminRegisterForm">
+                <div class="form-group">
+                    <label for="registerAd">Ad:</label>
+                    <input type="text" id="registerAd" placeholder="Admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerSoyad">Soyad:</label>
+                    <input type="text" id="registerSoyad" placeholder="Kullanıcı" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerEmail">Email:</label>
+                    <input type="email" id="registerEmail" placeholder="admin@example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerTelefon">Telefon:</label>
+                    <input type="text" id="registerTelefon" placeholder="05551234567" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerAdminNumarasi">Admin Numarası:</label>
+                    <input type="text" id="registerAdminNumarasi" placeholder="ADMIN001" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="registerSifre">Şifre:</label>
+                    <input type="password" id="registerSifre" placeholder="123456" required>
+                </div>
+                
+                <button type="submit">Admin Kaydı Oluştur</button>
+            </form>
+            <div id="registerError" class="error"></div>
+            <div id="registerSuccess" class="success"></div>
+        </div>
+        
+        <!-- Giriş Formu -->
+        <h3>🔑 Admin Girişi</h3>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminNumarasi">Admin Numarası:</label>
+                <input type="text" id="adminNumarasi" placeholder="ADMIN001" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="sifre">Şifre:</label>
+                <input type="password" id="sifre" placeholder="123456" required>
+            </div>
+            
+            <button type="submit">Giriş Yap</button>
+        </form>
+        
+        <div id="errorMessage" class="error"></div>
+        <div id="successMessage" class="success"></div>
+        <div id="result" class="result"></div>
+        
+        <!-- Tüm Adminleri Listele -->
+        <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
+            <h3>📋 Veritabanındaki Tüm Adminler</h3>
+            <button onclick="listAdmins()" style="width: 100%; margin-bottom: 10px; background: #28a745;">Adminleri Listele</button>
+            <div id="adminList" class="result"></div>
+        </div>
+        
+        <h3 style="margin-top: 30px;">Test Senaryoları:</h3>
+        <ul>
+            <li><strong>Doğru Giriş:</strong> ADMIN001 / 123456</li>
+            <li><strong>Yanlış Admin No:</strong> YANLIS001 / 123456</li>
+            <li><strong>Yanlış Şifre:</strong> ADMIN001 / yanlis123</li>
+            <li><strong>Boş Alanlar:</strong> Boş bırakıp test edin</li>
+        </ul>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api';
+        
+        // Kayıt formu event listener
+        document.getElementById('adminRegisterForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Mesajları temizle
+            document.getElementById('registerError').style.display = 'none';
+            document.getElementById('registerSuccess').style.display = 'none';
+            document.getElementById('adminList').textContent = '';
+            
+            const registerData = {
+                ad: document.getElementById('registerAd').value,
+                soyad: document.getElementById('registerSoyad').value,
+                email: document.getElementById('registerEmail').value,
+                telefon: document.getElementById('registerTelefon').value,
+                adminNumarasi: document.getElementById('registerAdminNumarasi').value,
+                sifre: document.getElementById('registerSifre').value
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/kayit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registerData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('registerSuccess').textContent = 'Admin kaydı başarıyla oluşturuldu! Kayıt ID: ' + data.id;
+                    document.getElementById('registerSuccess').style.display = 'block';
+                    
+                    // Formu temizle
+                    document.getElementById('adminRegisterForm').reset();
+                    
+                    // Adminleri listele
+                    setTimeout(() => listAdmins(), 500);
+                } else {
+                    document.getElementById('registerError').textContent = data.message || 'Kayıt oluşturulamadı!';
+                    document.getElementById('registerError').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('registerError').textContent = 'Bağlantı hatası: ' + error.message;
+                document.getElementById('registerError').style.display = 'block';
+            }
+        });
+        
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Mesajları temizle
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('result').textContent = '';
+            
+            const adminNumarasi = document.getElementById('adminNumarasi').value;
+            const sifre = document.getElementById('sifre').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin/giris`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        adminNumarasi: adminNumarasi,
+                        sifre: sifre
+                    })
+                });
+                
+                const data = await response.json();
+                
+                console.log('📥 Login Response:', data);
+                console.log('📥 Response keys:', Object.keys(data));
+                console.log('📥 Token var mı?', 'token' in data || 'Token' in data);
+                console.log('📥 data.token:', data.token);
+                console.log('📥 data.Token:', data.Token);
+                
+                if (response.ok) {
+                    // Token'ı al - hem camelCase hem PascalCase destekle
+                    const token = data.token || data.Token;
+                    
+                    console.log('🔑 Alınan token:', token ? token.substring(0, 20) + '...' : 'YOK!');
+                    console.log('🔑 Token uzunluğu:', token ? token.length : 0);
+                    
+                    if (!token) {
+                        console.error('❌ Token bulunamadı!');
+                        console.error('❌ Full response:', JSON.stringify(data, null, 2));
+                        document.getElementById('errorMessage').innerHTML = '<strong>❌ Hata:</strong> Giriş başarılı ancak token alınamadı!<br>Lütfen tekrar deneyin.';
+                        document.getElementById('errorMessage').style.display = 'block';
+                        document.getElementById('result').textContent = 'Response: ' + JSON.stringify(data, null, 2);
+                        return;
+                    }
+                    
+                    // Başarılı giriş - Token'ı kaydet ve admin paneline yönlendir
+                    localStorage.setItem('adminToken', token);
+                    localStorage.setItem('adminInfo', JSON.stringify({
+                        id: data.id || data.Id,
+                        ad: data.ad || data.Ad,
+                        soyad: data.soyad || data.Soyad,
+                        email: data.email || data.Email,
+                        telefon: data.telefon || data.Telefon,
+                        adminNumarasi: data.adminNumarasi || data.AdminNumarasi
+                    }));
+                    
+                    console.log('✅ Token localStorage\'a kaydedildi');
+                    console.log('✅ Admin bilgileri kaydedildi');
+                    
+                    document.getElementById('successMessage').textContent = 'Giriş başarılı! Admin paneline yönlendiriliyorsunuz...';
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // 2 saniye sonra admin paneline yönlendir
+                    setTimeout(() => {
+                        window.location.href = 'admin-panel.html';
+                    }, 2000);
+                } else {
+                    // Hata durumu
+                    document.getElementById('errorMessage').textContent = data.message || data.Message || 'Giriş başarısız!';
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+                }
+                
+            } catch (error) {
+                // Ağ hatası
+                document.getElementById('errorMessage').textContent = 'Bağlantı hatası: ' + error.message;
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('result').textContent = 'Hata: ' + error.message;
+            }
+        });
+        
+        // Tüm adminleri listele
+        async function listAdmins() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/admin`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('adminList').textContent = 'Toplam Admin Sayısı: ' + data.length + '\n\n' + JSON.stringify(data, null, 2);
+                } else {
+                    document.getElementById('adminList').textContent = 'Hata: ' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                document.getElementById('adminList').textContent = 'Bağlantı hatası: ' + error.message;
+            }
+        }
+        
+        // Test butonları ekle
+        function testLogin(adminNumarasi, sifre) {
+            document.getElementById('adminNumarasi').value = adminNumarasi;
+            document.getElementById('sifre').value = sifre;
+            document.getElementById('adminLoginForm').dispatchEvent(new Event('submit'));
+        }
+        
+        // Test butonları
+        document.body.innerHTML += `
+            <div style="margin-top: 20px; text-align: center;">
+                <button onclick="testLogin('ADMIN001', '123456')" style="width: auto; margin: 5px; background: #28a745;">Doğru Giriş</button>
+                <button onclick="testLogin('YANLIS001', '123456')" style="width: auto; margin: 5px; background: #dc3545;">Yanlış Admin</button>
+                <button onclick="testLogin('ADMIN001', 'yanlis123')" style="width: auto; margin: 5px; background: #dc3545;">Yanlış Şifre</button>
+                <button onclick="testLogin('', '')" style="width: auto; margin: 5px; background: #ffc107; color: black;">Boş Alanlar</button>
+            </div>
+        `;
+    </script>
+</body>
+</html>

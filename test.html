@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spor Proje API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .section h2 {
+            color: #555;
+            margin-top: 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏃‍♂️ Spor Proje API Test Sayfası</h1>
+        
+        <div class="grid">
+            <!-- Sporcular Bölümü -->
+            <div class="section">
+                <h2>👥 Sporcular</h2>
+                <button onclick="getSporcular()">Tüm Sporcuları Getir</button>
+                <button onclick="getAktifSporcular()">Aktif Sporcuları Getir</button>
+                <button onclick="getSporcuById()">ID ile Sporcu Getir</button>
+                
+                <div class="form-group">
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="sporcuId" placeholder="Sporcu ID girin">
+                </div>
+                
+                <div class="form-group">
+                    <label>Spor Dalı:</label>
+                    <input type="text" id="sporDali" placeholder="Futbol, Basketbol, Yüzme">
+                </div>
+                <button onclick="getSporcularBySporDali()">Spor Dalına Göre Getir</button>
+                
+                <div class="form-group">
+                    <h3>Yeni Sporcu Ekle</h3>
+                    <label>Ad:</label>
+                    <input type="text" id="sporcuAd" placeholder="Ad">
+                    <label>Soyad:</label>
+                    <input type="text" id="sporcuSoyad" placeholder="Soyad">
+                    <label>Spor Dalı:</label>
+                    <input type="text" id="sporcuSporDali" placeholder="Spor Dalı">
+                    <label>Yaş:</label>
+                    <input type="number" id="sporcuYas" placeholder="Yaş">
+                    <label>Email:</label>
+                    <input type="email" id="sporcuEmail" placeholder="Email">
+                    <label>Telefon:</label>
+                    <input type="text" id="sporcuTelefon" placeholder="Telefon">
+                    <button onclick="addSporcu()">Sporcu Ekle</button>
+                </div>
+                
+                <div id="sporcularResult" class="result"></div>
+            </div>
+
+            <!-- Antrenmanlar Bölümü -->
+            <div class="section">
+                <h2>🏋️‍♂️ Antrenmanlar</h2>
+                <button onclick="getAntrenmanlar()">Tüm Antrenmanları Getir</button>
+                <button onclick="getAntrenmanlarBySporcu()">Sporcuya Göre Antrenmanlar</button>
+                
+                <div class="form-group">
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="antrenmanSporcuId" placeholder="Sporcu ID">
+                </div>
+                
+                <div class="form-group">
+                    <h3>Yeni Antrenman Ekle</h3>
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="yeniAntrenmanSporcuId" placeholder="Sporcu ID">
+                    <label>Antrenman Adı:</label>
+                    <input type="text" id="antrenmanAdi" placeholder="Antrenman Adı">
+                    <label>Açıklama:</label>
+                    <textarea id="antrenmanAciklama" placeholder="Açıklama"></textarea>
+                    <label>Süre (dakika):</label>
+                    <input type="number" id="antrenmanSure" placeholder="Süre">
+                    <label>Antrenman Tipi:</label>
+                    <select id="antrenmanTipi">
+                        <option value="Kardiyo">Kardiyo</option>
+                        <option value="Kuvvet">Kuvvet</option>
+                        <option value="Teknik">Teknik</option>
+                        <option value="Esneklik">Esneklik</option>
+                    </select>
+                    <label>Kalori Yakılan:</label>
+                    <input type="number" id="kaloriYakilan" placeholder="Kalori">
+                    <label>Kalp Atış Hızı:</label>
+                    <input type="number" id="kalpAtisHizi" placeholder="Kalp Atış Hızı">
+                    <label>Notlar:</label>
+                    <textarea id="antrenmanNotlar" placeholder="Notlar"></textarea>
+                    <button onclick="addAntrenman()">Antrenman Ekle</button>
+                </div>
+                
+                <div id="antrenmanlarResult" class="result"></div>
+            </div>
+
+            <!-- Performanslar Bölümü -->
+            <div class="section">
+                <h2>📊 Performanslar</h2>
+                <button onclick="getPerformanslar()">Tüm Performansları Getir</button>
+                <button onclick="getPerformanslarBySporcu()">Sporcuya Göre Performanslar</button>
+                <button onclick="getEnIyiPerformanslar()">En İyi Performanslar</button>
+                
+                <div class="form-group">
+                    <h3>Yeni Performans Ekle</h3>
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="performansSporcuId" placeholder="Sporcu ID">
+                    <label>Performans Adı:</label>
+                    <input type="text" id="performansAdi" placeholder="Performans Adı">
+                    <label>Değer:</label>
+                    <input type="number" step="0.01" id="performansDeger" placeholder="Değer">
+                    <label>Birim:</label>
+                    <input type="text" id="performansBirim" placeholder="Birim (saniye, kg, metre)">
+                    <label>Kategori:</label>
+                    <select id="performansKategori">
+                        <option value="Hız">Hız</option>
+                        <option value="Kuvvet">Kuvvet</option>
+                        <option value="Dayanıklılık">Dayanıklılık</option>
+                        <option value="Şut">Şut</option>
+                    </select>
+                    <label>Açıklama:</label>
+                    <textarea id="performansAciklama" placeholder="Açıklama"></textarea>
+                    <button onclick="addPerformans()">Performans Ekle</button>
+                </div>
+                
+                <div id="performanslarResult" class="result"></div>
+            </div>
+
+            <!-- Beslenme Bölümü -->
+            <div class="section">
+                <h2>🍎 Beslenme</h2>
+                <button onclick="getBeslenmeKayitlari()">Tüm Beslenme Kayıtları</button>
+                <button onclick="getBeslenmeBySporcu()">Sporcuya Göre Beslenme</button>
+                
+                <div class="form-group">
+                    <h3>Yeni Beslenme Kaydı Ekle</h3>
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="beslenmeSporcuId" placeholder="Sporcu ID">
+                    <label>Yemek Adı:</label>
+                    <input type="text" id="yemekAdi" placeholder="Yemek Adı">
+                    <label>Öğün:</label>
+                    <select id="ogun">
+                        <option value="Kahvaltı">Kahvaltı</option>
+                        <option value="Öğle">Öğle</option>
+                        <option value="Akşam">Akşam</option>
+                        <option value="Atıştırmalık">Atıştırmalık</option>
+                    </select>
+                    <label>Kalori:</label>
+                    <input type="number" step="0.01" id="kalori" placeholder="Kalori">
+                    <label>Protein (gram):</label>
+                    <input type="number" step="0.01" id="protein" placeholder="Protein">
+                    <label>Karbonhidrat (gram):</label>
+                    <input type="number" step="0.01" id="karbonhidrat" placeholder="Karbonhidrat">
+                    <label>Yağ (gram):</label>
+                    <input type="number" step="0.01" id="yag" placeholder="Yağ">
+                    <label>Açıklama:</label>
+                    <textarea id="beslenmeAciklama" placeholder="Açıklama"></textarea>
+                    <button onclick="addBeslenme()">Beslenme Kaydı Ekle</button>
+                </div>
+                
+                <div id="beslenmeResult" class="result"></div>
+            </div>
+
+            <!-- Hedefler Bölümü -->
+            <div class="section">
+                <h2>🎯 Hedefler</h2>
+                <button onclick="getHedefler()">Tüm Hedefleri Getir</button>
+                <button onclick="getHedeflerBySporcu()">Sporcuya Göre Hedefler</button>
+                <button onclick="getAktifHedefler()">Aktif Hedefler</button>
+                <button onclick="getTamamlananHedefler()">Tamamlanan Hedefler</button>
+                
+                <div class="form-group">
+                    <h3>Yeni Hedef Ekle</h3>
+                    <label>Sporcu ID:</label>
+                    <input type="number" id="hedefSporcuId" placeholder="Sporcu ID">
+                    <label>Hedef Adı:</label>
+                    <input type="text" id="hedefAdi" placeholder="Hedef Adı">
+                    <label>Açıklama:</label>
+                    <textarea id="hedefAciklama" placeholder="Açıklama"></textarea>
+                    <label>Hedef Tarihi:</label>
+                    <input type="date" id="hedefTarihi">
+                    <label>Kategori:</label>
+                    <select id="hedefKategori">
+                        <option value="Performans">Performans</option>
+                        <option value="Kilo">Kilo</option>
+                        <option value="Antrenman">Antrenman</option>
+                        <option value="Rekor">Rekor</option>
+                    </select>
+                    <label>Hedef Değer:</label>
+                    <input type="number" step="0.01" id="hedefDeger" placeholder="Hedef Değer">
+                    <label>Birim:</label>
+                    <input type="text" id="hedefBirim" placeholder="Birim">
+                    <button onclick="addHedef()">Hedef Ekle</button>
+                </div>
+                
+                <div id="hedeflerResult" class="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api';
+
+        // Sporcular API fonksiyonları
+        async function getSporcular() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Sporcu`);
+                const data = await response.json();
+                document.getElementById('sporcularResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('sporcularResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getAktifSporcular() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Sporcu/Aktif`);
+                const data = await response.json();
+                document.getElementById('sporcularResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('sporcularResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getSporcuById() {
+            const id = document.getElementById('sporcuId').value;
+            if (!id) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Sporcu/${id}`);
+                const data = await response.json();
+                document.getElementById('sporcularResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('sporcularResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getSporcularBySporDali() {
+            const sporDali = document.getElementById('sporDali').value;
+            if (!sporDali) {
+                alert('Lütfen spor dalı girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Sporcu/SporDali/${sporDali}`);
+                const data = await response.json();
+                document.getElementById('sporcularResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('sporcularResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function addSporcu() {
+            const sporcu = {
+                ad: document.getElementById('sporcuAd').value,
+                soyad: document.getElementById('sporcuSoyad').value,
+                sporDali: document.getElementById('sporcuSporDali').value,
+                yas: parseInt(document.getElementById('sporcuYas').value),
+                email: document.getElementById('sporcuEmail').value,
+                telefon: document.getElementById('sporcuTelefon').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/Sporcu`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(sporcu)
+                });
+                const data = await response.json();
+                document.getElementById('sporcularResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('sporcularResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        // Antrenmanlar API fonksiyonları
+        async function getAntrenmanlar() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Antrenman`);
+                const data = await response.json();
+                document.getElementById('antrenmanlarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('antrenmanlarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getAntrenmanlarBySporcu() {
+            const sporcuId = document.getElementById('antrenmanSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Antrenman/Sporcu/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('antrenmanlarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('antrenmanlarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function addAntrenman() {
+            // JWT token'ı localStorage'dan al
+            const authToken = localStorage.getItem('token');
+            console.log('🔑 Token kontrolü:', authToken ? 'Token bulundu' : 'Token bulunamadı');
+            
+            if (!authToken) {
+                // Token yoksa, önce giriş yapılması gerektiğini belirt
+                alert('❌ Lütfen önce giriş yapın! Token bulunamadı.');
+                console.error('❌ Token bulunamadı! localStorage:', localStorage);
+                console.error('❌ Token bulunamadı! Lütfen önce giriş yapın.');
+                return;
+            }
+
+            const antrenman = {
+                AntrenmanAdi: document.getElementById('antrenmanAdi').value || document.getElementById('egzersizAdi')?.value || '',
+                Aciklama: document.getElementById('antrenmanAciklama').value || '',
+                Sure: parseInt(document.getElementById('antrenmanSure').value || document.getElementById('sure')?.value || 0),
+                AntrenmanTipi: document.getElementById('antrenmanTipi').value || document.getElementById('antrenmanTuru')?.value || '',
+                KaloriYakilan: parseInt(document.getElementById('kaloriYakilan').value || 0),
+                KalpAtisHizi: parseInt(document.getElementById('kalpAtisHizi').value || 0),
+                Notlar: document.getElementById('antrenmanNotlar').value || document.getElementById('notlar')?.value || ''
+            };
+
+            // Validasyon
+            if (!antrenman.AntrenmanAdi || antrenman.AntrenmanAdi.trim() === '') {
+                alert('Lütfen antrenman adı girin!');
+                return;
+            }
+
+            // Gönderilecek veriyi logla
+            console.log('📤 Antrenman kayıt isteği:', antrenman);
+            console.log('📤 JSON:', JSON.stringify(antrenman));
+
+            try {
+                // Önce health check yap
+                const healthUrl = `${API_BASE_URL}/Antrenman/health`;
+                console.log('🔍 Health check:', healthUrl);
+                try {
+                    const healthResponse = await fetch(healthUrl);
+                    if (healthResponse.ok) {
+                        const healthData = await healthResponse.json();
+                        console.log('✅ Backend çalışıyor:', healthData);
+                    } else {
+                        console.warn('⚠️ Health check başarısız:', healthResponse.status);
+                    }
+                } catch (healthError) {
+                    console.error('❌ Health check hatası:', healthError);
+                    console.error('❌ Backend API çalışmıyor olabilir!');
+                }
+                
+                const url = `${API_BASE_URL}/Antrenman`;
+                console.log('📤 Antrenman ekleme isteği:', url);
+                console.log('📤 Gönderilen veri:', JSON.stringify(antrenman, null, 2));
+                console.log('📤 Token var mı:', authToken ? 'Evet' : 'Hayır');
+                console.log('📤 Token (ilk 20 karakter):', authToken ? authToken.substring(0, 20) + '...' : 'Yok');
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(antrenman)
+                });
+
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response ok:', response.ok);
+                console.log('📥 Response statusText:', response.statusText);
+                console.log('📥 Response URL:', response.url);
+
+                // 404 hatası için özel kontrol
+                if (response.status === 404) {
+                    console.error('❌ API Status: 404 Not Found');
+                    console.error('❌ API Hatası: HTTP 404: Not Found');
+                    console.error('❌ Endpoint bulunamadı:', url);
+                    console.error('❌ Lütfen backend API\'nin çalıştığından emin olun');
+                    console.error('❌ Backend URL kontrolü: http://localhost:7043/api/Antrenman');
+                    document.getElementById('antrenmanlarResult').textContent = 'Hata: API endpoint bulunamadı (404). Lütfen backend API\'nin çalıştığından emin olun.';
+                    alert('❌ API endpoint bulunamadı (404).\n\nLütfen:\n1. Backend API\'nin çalıştığından emin olun (http://localhost:7043)\n2. Endpoint\'in doğru olduğunu kontrol edin\n3. Console\'daki hata mesajlarını kontrol edin');
+                    return;
+                }
+
+                let data;
+                try {
+                    const responseText = await response.text();
+                    console.log('📥 Response text:', responseText);
+                    data = responseText ? JSON.parse(responseText) : {};
+                    console.log('📥 Response data:', data);
+                } catch (jsonError) {
+                    console.error('❌ JSON parse hatası:', jsonError);
+                    document.getElementById('antrenmanlarResult').textContent = 'Hata: JSON parse edilemedi. Response: ' + (await response.text());
+                    alert('❌ Sunucudan geçersiz yanıt alındı. Lütfen tekrar deneyin.');
+                    return;
+                }
+
+                if (!response.ok) {
+                    // Hata durumu
+                    const errorMessage = data.message || data.error || `HTTP ${response.status}`;
+                    const fullError = data.innerException ? `${errorMessage} (Detay: ${data.innerException})` : errorMessage;
+                    console.error('❌ Antrenman kaydetme hatası:', errorMessage);
+                    console.error('❌ Full error data:', data);
+                    document.getElementById('antrenmanlarResult').textContent = 'Hata: ' + JSON.stringify(data, null, 2);
+                    alert('❌ Antrenman kaydedilirken hata oluştu: ' + fullError);
+                    return;
+                }
+
+                // Başarılı durum
+                console.log('✅ Antrenman başarıyla kaydedildi:', data);
+                document.getElementById('antrenmanlarResult').textContent = JSON.stringify(data, null, 2);
+                alert('✅ Antrenman başarıyla kaydedildi!');
+                
+                // Formu temizle
+                if (document.getElementById('antrenmanAdi')) document.getElementById('antrenmanAdi').value = '';
+                if (document.getElementById('antrenmanAciklama')) document.getElementById('antrenmanAciklama').value = '';
+                if (document.getElementById('antrenmanSure')) document.getElementById('antrenmanSure').value = '';
+                if (document.getElementById('kaloriYakilan')) document.getElementById('kaloriYakilan').value = '';
+                if (document.getElementById('kalpAtisHizi')) document.getElementById('kalpAtisHizi').value = '';
+                if (document.getElementById('antrenmanNotlar')) document.getElementById('antrenmanNotlar').value = '';
+            } catch (error) {
+                console.error('❌ Antrenman kaydetme hatası:', error);
+                document.getElementById('antrenmanlarResult').textContent = 'Hata: ' + error.message;
+                alert('❌ Antrenman kaydedilirken hata oluştu: ' + error.message);
+            }
+        }
+
+        // Performanslar API fonksiyonları
+        async function getPerformanslar() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Performans`);
+                const data = await response.json();
+                document.getElementById('performanslarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('performanslarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getPerformanslarBySporcu() {
+            const sporcuId = document.getElementById('performansSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Performans/Sporcu/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('performanslarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('performanslarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getEnIyiPerformanslar() {
+            const sporcuId = document.getElementById('performansSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Performans/EnIyi/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('performanslarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('performanslarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function addPerformans() {
+            const performans = {
+                sporcuId: parseInt(document.getElementById('performansSporcuId').value),
+                performansAdi: document.getElementById('performansAdi').value,
+                deger: parseFloat(document.getElementById('performansDeger').value),
+                birim: document.getElementById('performansBirim').value,
+                kategori: document.getElementById('performansKategori').value,
+                aciklama: document.getElementById('performansAciklama').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/Performans`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(performans)
+                });
+                const data = await response.json();
+                document.getElementById('performanslarResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('performanslarResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        // Beslenme API fonksiyonları
+        async function getBeslenmeKayitlari() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Beslenme`);
+                const data = await response.json();
+                document.getElementById('beslenmeResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('beslenmeResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getBeslenmeBySporcu() {
+            const sporcuId = document.getElementById('beslenmeSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Beslenme/Sporcu/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('beslenmeResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('beslenmeResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function addBeslenme() {
+            const beslenme = {
+                sporcuId: parseInt(document.getElementById('beslenmeSporcuId').value),
+                yemekAdi: document.getElementById('yemekAdi').value,
+                ogun: document.getElementById('ogun').value,
+                kalori: parseFloat(document.getElementById('kalori').value),
+                protein: parseFloat(document.getElementById('protein').value),
+                karbonhidrat: parseFloat(document.getElementById('karbonhidrat').value),
+                yag: parseFloat(document.getElementById('yag').value),
+                aciklama: document.getElementById('beslenmeAciklama').value
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/Beslenme`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(beslenme)
+                });
+                const data = await response.json();
+                document.getElementById('beslenmeResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('beslenmeResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        // Hedefler API fonksiyonları
+        async function getHedefler() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/Hedef`);
+                const data = await response.json();
+                document.getElementById('hedeflerResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getHedeflerBySporcu() {
+            const sporcuId = document.getElementById('hedefSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Hedef/Sporcu/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('hedeflerResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getAktifHedefler() {
+            const sporcuId = document.getElementById('hedefSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Hedef/Aktif/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('hedeflerResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function getTamamlananHedefler() {
+            const sporcuId = document.getElementById('hedefSporcuId').value;
+            if (!sporcuId) {
+                alert('Lütfen sporcu ID girin');
+                return;
+            }
+            try {
+                const response = await fetch(`${API_BASE_URL}/Hedef/Tamamlanan/${sporcuId}`);
+                const data = await response.json();
+                document.getElementById('hedeflerResult').textContent = JSON.stringify(data, null, 2);
+            } catch (error) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        async function addHedef() {
+            // Token'ı localStorage'dan al
+            const authToken = localStorage.getItem('token');
+            
+            if (!authToken) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: Lütfen önce giriş yapın!';
+                alert('Lütfen önce giriş yapın!');
+                return;
+            }
+            
+            const hedef = {
+                HedefAdi: document.getElementById('hedefAdi').value.trim(),
+                Aciklama: document.getElementById('hedefAciklama').value.trim(),
+                HedefTarihi: document.getElementById('hedefTarihi').value,
+                Kategori: document.getElementById('hedefKategori').value,
+                HedefDeger: document.getElementById('hedefDeger').value ? parseFloat(document.getElementById('hedefDeger').value) : null,
+                Birim: document.getElementById('hedefBirim').value.trim()
+            };
+            
+            // Validasyon
+            if (!hedef.HedefAdi) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: Lütfen hedef adı girin!';
+                alert('Lütfen hedef adı girin!');
+                return;
+            }
+            
+            if (!hedef.HedefTarihi) {
+                document.getElementById('hedeflerResult').textContent = 'Hata: Lütfen hedef tarihi seçin!';
+                alert('Lütfen hedef tarihi seçin!');
+                return;
+            }
+
+            try {
+                console.log('📤 Hedef ekleniyor:', hedef);
+                console.log('📤 JSON:', JSON.stringify(hedef, null, 2));
+                console.log('📤 Token var mı:', authToken ? 'Evet' : 'Hayır');
+                console.log('📤 Endpoint URL:', `${API_BASE_URL}/Hedef`);
+                
+                const response = await fetch(`${API_BASE_URL}/Hedef`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(hedef)
+                });
+                
+                console.log('📥 Response status:', response.status);
+                console.log('📥 Response ok:', response.ok);
+                
+                if (!response.ok) {
+                    let errorData;
+                    let responseText = '';
+                    try {
+                        responseText = await response.text();
+                        console.error('❌ Response text:', responseText);
+                        errorData = responseText ? JSON.parse(responseText) : { message: `HTTP ${response.status}: ${response.statusText}` };
+                    } catch (e) {
+                        errorData = { message: `HTTP ${response.status}: ${response.statusText}`, rawResponse: responseText };
+                        console.error('❌ JSON parse hatası:', e);
+                    }
+                    console.error('❌ Hedef ekleme hatası:', errorData);
+                    document.getElementById('hedeflerResult').textContent = 'Hata: ' + JSON.stringify(errorData, null, 2);
+                    return;
+                }
+                
+                let data;
+                try {
+                    const responseText = await response.text();
+                    console.log('📥 Response text:', responseText);
+                    data = responseText ? JSON.parse(responseText) : {};
+                    console.log('📥 Response data:', data);
+                } catch (jsonError) {
+                    console.error('❌ JSON parse hatası:', jsonError);
+                    document.getElementById('hedeflerResult').textContent = 'Hata: Sunucudan geçersiz yanıt alındı.';
+                    return;
+                }
+                
+                console.log('✅ Hedef başarıyla eklendi:', data);
+                document.getElementById('hedeflerResult').textContent = JSON.stringify(data, null, 2);
+                
+                // Formu temizle
+                document.getElementById('hedefAdi').value = '';
+                document.getElementById('hedefAciklama').value = '';
+                document.getElementById('hedefTarihi').value = '';
+                document.getElementById('hedefKategori').value = '';
+                document.getElementById('hedefDeger').value = '';
+                document.getElementById('hedefBirim').value = '';
+                document.getElementById('hedefSporcuId').value = '';
+            } catch (error) {
+                console.error('❌ Hedef ekleme hatası:', error);
+                document.getElementById('hedeflerResult').textContent = 'Hata: ' + error.message;
+            }
+        }
+
+        // Sayfa yüklendiğinde otomatik olarak sporcuları getir
+        window.onload = function() {
+            getSporcular();
+        };
+    </script>
+</body>
+</html>

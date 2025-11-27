@@ -1,0 +1,6 @@
+@spor_proje_api_HostAddress = https://localhost:5041
+
+GET {{spor_proje_api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

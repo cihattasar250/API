@@ -1,0 +1,44 @@
+### Admin Giriş Testi - Doğru Bilgiler
+POST https://localhost:7000/api/admin/giris
+Content-Type: application/json
+
+{
+  "adminNumarasi": "ADMIN001",
+  "sifre": "123456"
+}
+
+### Admin Giriş Testi - Yanlış Admin Numarası
+POST https://localhost:7000/api/admin/giris
+Content-Type: application/json
+
+{
+  "adminNumarasi": "YANLIS001",
+  "sifre": "123456"
+}
+
+### Admin Giriş Testi - Yanlış Şifre
+POST https://localhost:7000/api/admin/giris
+Content-Type: application/json
+
+{
+  "adminNumarasi": "ADMIN001",
+  "sifre": "yanlis123"
+}
+
+### Admin Giriş Testi - Boş Admin Numarası
+POST https://localhost:7000/api/admin/giris
+Content-Type: application/json
+
+{
+  "adminNumarasi": "",
+  "sifre": "123456"
+}
+
+### Admin Giriş Testi - Boş Şifre
+POST https://localhost:7000/api/admin/giris
+Content-Type: application/json
+
+{
+  "adminNumarasi": "ADMIN001",
+  "sifre": ""
+}

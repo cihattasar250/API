@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Üye Girişi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        select {
+            cursor: pointer;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        /* Tarayıcı autocomplete dropdown'unu gizle */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px white inset !important;
+            box-shadow: 0 0 0 30px white inset !important;
+        }
+        
+        /* Autocomplete dropdown'unu gizle */
+        input::-webkit-contacts-auto-fill-button,
+        input::-webkit-credentials-auto-fill-button {
+            visibility: hidden;
+            display: none !important;
+            pointer-events: none;
+            height: 0;
+            width: 0;
+            margin: 0;
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .link a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔑 Üye Girişi</h1>
+        <p class="subtitle">Hesabınıza giriş yapın</p>
+        
+        <div id="message" class="message"></div>
+        
+        <form id="loginForm" autocomplete="off" novalidate>
+            <div class="form-group">
+                <label for="uyeNumarasi">Üye Numarası:</label>
+                <input type="text" 
+                       id="uyeNumarasi" 
+                       name="random_name_1" 
+                       placeholder="Üye numaranızı girin" 
+                       required 
+                       autofocus 
+                       autocomplete="nope"
+                       readonly
+                       onfocus="this.removeAttribute('readonly');">
+            </div>
+            
+            <div class="form-group">
+                <label for="sifre">Şifre:</label>
+                <input type="password" 
+                       id="sifre" 
+                       name="random_name_2" 
+                       placeholder="Şifrenizi girin" 
+                       required 
+                       autocomplete="new-password"
+                       readonly
+                       onfocus="this.removeAttribute('readonly');">
+            </div>
+            
+            <button type="submit">Giriş Yap</button>
+        </form>
+        
+        <div class="link">
+            <a href="uye_kayit_test.html">Henüz üye değil misiniz? Kayıt olun</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:7043/api/Uye';
+        
+        // Sayfa yüklendiğinde autocomplete'i engelle
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tüm input alanlarını readonly yap, sonra focus olduğunda kaldır
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                // Autocomplete'i tamamen kapat
+                input.setAttribute('autocomplete', 'off');
+                input.setAttribute('autocorrect', 'off');
+                input.setAttribute('autocapitalize', 'off');
+                input.setAttribute('spellcheck', 'false');
+                
+                // Readonly ekle ve focus olduğunda kaldır
+                if (!input.hasAttribute('readonly')) {
+                    input.setAttribute('readonly', 'readonly');
+                    input.addEventListener('focus', function() {
+                        this.removeAttribute('readonly');
+                    });
+                }
+            });
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = 'message';
+            messageDiv.textContent = '';
+            
+            const uyeNumarasi = document.getElementById('uyeNumarasi').value;
+            const sifre = document.getElementById('sifre').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/giris`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        uyeNumarasi: uyeNumarasi,
+                        sifre: sifre
+                    })
+                });
+                
+                // Response'u kontrol et
+                if (!response.ok) {
+                    let errorMessage = 'Giriş başarısız!';
+                    let errorDetails = null;
+                    try {
+                        const errorData = await response.json();
+                        errorDetails = errorData;
+                        console.error('💥 Error detayları:', errorData);
+                        errorMessage = errorData.message || errorData.error || 'Sunucu hatası! Lütfen daha sonra tekrar deneyin.';
+                        
+                        // Inner exception varsa göster
+                        if (errorData.innerException) {
+                            console.error('💥 Inner Exception:', errorData.innerException);
+                            errorMessage += ' (Detay: ' + errorData.innerException + ')';
+                        }
+                    } catch (e) {
+                        console.error('💥 Response parse hatası:', e);
+                        errorMessage = `Sunucu hatası! (${response.status})`;
+                    }
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = '❌ ' + errorMessage;
+                    return;
+                }
+                
+                const data = await response.json();
+                
+                // Response'u detaylı logla
+                console.log('📥 Giriş Response:', data);
+                console.log('📥 Response keys:', Object.keys(data));
+                console.log('📥 Token kontrolü - data.token:', data.token);
+                console.log('📥 Token kontrolü - data.Token:', data.Token);
+                
+                // Token kontrolü (büyük/küçük harf farkı için)
+                const token = data.token || data.Token;
+                console.log('📥 Bulunan token:', token ? 'Token var (' + token.length + ' karakter)' : 'Token YOK!');
+                
+                // Token yoksa hata logla
+                if (response.ok && !token) {
+                    console.error('❌ Token bulunamadı! Response:', JSON.stringify(data, null, 2));
+                    console.error('❌ Response tüm içerik:', data);
+                }
+                
+                if (response.ok && token) {
+                    // Eski kullanıcı ID'sini kontrol et
+                    const oldUserId = localStorage.getItem('currentUserId');
+                    const newUserId = data.id ? data.id.toString() : null;
+                    
+                    // Sadece farklı bir üye giriş yaptıysa eski verileri temizle
+                    // Aynı üye tekrar giriş yaptığında sayaç verileri korunur
+                    if (oldUserId && newUserId && oldUserId !== newUserId) {
+                        // Farklı üye giriş yaptı, eski üyenin verilerini temizle
+                        const oldKeys = Object.keys(localStorage);
+                        oldKeys.forEach(key => {
+                            // Eski üyenin verilerini temizle (userId prefix'li olanlar)
+                            if (key.includes(`_${oldUserId}`) || key.endsWith(`_${oldUserId}`)) {
+                                if (key.startsWith('uyelikPaketi_') || 
+                                    key.startsWith('sayac_') || 
+                                    key.startsWith('uyePaket_') ||
+                                    key.startsWith('membership_') ||
+                                    key.startsWith('countdown_')) {
+                                    localStorage.removeItem(key);
+                                }
+                            }
+                        });
+                    }
+                    // Aynı üye ise veya ilk giriş ise sayaç verileri korunur
+                    
+                    // Token'ı localStorage'a kaydet
+                    localStorage.setItem('token', token);
+                    
+                    // Yeni üyenin ID'sini sakla (üyelik paketi ve sayaç için)
+                    if (data.id) {
+                        localStorage.setItem('currentUserId', data.id.toString());
+                    }
+                    
+                    // Başarı mesajı göster
+                    messageDiv.className = 'message success';
+                    messageDiv.textContent = '✅ Giriş başarılı! Yönlendiriliyorsunuz...';
+                    
+                    // Panele yönlendir
+                    setTimeout(() => {
+                        window.location.href = 'uye_panel.html';
+                    }, 1000);
+                } else {
+                    // Token yoksa detaylı hata göster
+                    const errorMsg = data.message || 'Giriş başarısız! Token alınamadı.';
+                    console.error('❌ Token bulunamadı! Response:', data);
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = '❌ ' + errorMsg;
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                messageDiv.className = 'message error';
+                messageDiv.textContent = '❌ Bağlantı hatası: ' + (error.message || 'Sunucuya bağlanılamadı. Lütfen internet bağlantınızı kontrol edin.');
+            }
+        });
+    </script>
+</body>
+</html>
+

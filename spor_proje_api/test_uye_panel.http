@@ -1,0 +1,15 @@
+### Üye Giriş Testi
+POST https://localhost:7000/api/uye/giris
+Content-Type: application/json
+
+{
+  "uyeNumarasi": "UYE001",
+  "sifre": "123456"
+}
+
+### Üye Panel Testi (Token ile)
+GET https://localhost:7000/api/uye/panel
+Authorization: Bearer {{token}}
+
+### Test için örnek token (gerçek token'ı yukarıdaki giriş endpointinden alın)
+# @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiVGVzdCDDnHllIiwiVXNlclR5cGUiOiJVeWUiLCJVc2VySWQiOiIxIiwiZXhwIjoxNzM2MjY0MzU2LCJpc3MiOiJTcG9yUHJvamVBUElBIiwiYXVkIjoiU3BvclByb2plVXNlcnMifQ.example
