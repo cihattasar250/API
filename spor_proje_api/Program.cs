@@ -103,6 +103,9 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Root path'i Swagger'a yönlendir
+app.MapGet("/", () => Results.Redirect("/swagger/index.html"));
+
 app.MapControllers();
 
 // Veritabanı resetleme DEVRE DIŞI: Artık uygulama başlarken veriler silinmeyecek.
