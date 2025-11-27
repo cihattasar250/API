@@ -85,11 +85,9 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger her ortamda aktif
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // HTTPS redirection sadece Development ortamında kullanılmalı
 // Render gibi production platformlarında reverse proxy HTTPS'i handle eder
