@@ -91,7 +91,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection sadece Development ortamında kullanılmalı
+// Render gibi production platformlarında reverse proxy HTTPS'i handle eder
+if (app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 
 // CORS middleware'i ekleme
 app.UseCors("AllowAll");
