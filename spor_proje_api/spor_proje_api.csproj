@@ -18,4 +18,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- launchSettings.json'ı publish'ten hariç tut - Render'da sorun yaratmasın -->
+    <Content Remove="Properties\launchSettings.json" />
+  </ItemGroup>
+
 </Project>
