@@ -244,7 +244,6 @@ using (var scope = app.Services.CreateScope())
             await connection.CloseAsync();
         }
     }
-    }
     catch (Microsoft.Data.SqlClient.SqlException sqlEx)
     {
         logger.LogError(sqlEx, "SQL Server bağlantı hatası: {Message}. Connection string kontrol edin.", sqlEx.Message);
