@@ -77,8 +77,21 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Entity Framework DbContext ekleme
+// Connection string önce environment variable'dan okunur (Render için: ConnectionStrings__DefaultConnection)
+// Yoksa appsettings.json'dan okunur (local development için)
+// ASP.NET Core Configuration otomatik olarak environment variable'ları da okur
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' not found. " +
+        "Please set it in appsettings.json or as environment variable 'ConnectionStrings__DefaultConnection'. " +
+        "For Render: Set environment variable 'ConnectionStrings__DefaultConnection' with your SQL Server connection string.");
+}
+
 builder.Services.AddDbContext<SporDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
 // JWT Authentication ekleme
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -153,6 +166,7 @@ app.MapControllers();
 // Gerekirse manuel olarak 'reset_database.sql' scriptini çalıştırabilirsin.
 
 // Paket kolonlarını otomatik ekle ve Sayac kolonunu kaldır
+// NOT: Bu işlem sadece veritabanı bağlantısı başarılı olduğunda çalışır
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SporDbContext>();
@@ -160,8 +174,9 @@ using (var scope = app.Services.CreateScope())
     
     try
     {
-        // Veritabanı bağlantısını kontrol et
-        if (await context.Database.CanConnectAsync())
+        // Veritabanı bağlantısını kontrol et (timeout ile)
+        var canConnect = await context.Database.CanConnectAsync();
+        if (canConnect)
         {
             var connection = context.Database.GetDbConnection();
             await connection.OpenAsync();
@@ -228,6 +243,13 @@ using (var scope = app.Services.CreateScope())
             
             await connection.CloseAsync();
         }
+    }
+    }
+    catch (Microsoft.Data.SqlClient.SqlException sqlEx)
+    {
+        logger.LogError(sqlEx, "SQL Server bağlantı hatası: {Message}. Connection string kontrol edin.", sqlEx.Message);
+        logger.LogWarning("Veritabanı bağlantısı başarısız. Uygulama çalışmaya devam edecek ancak veritabanı işlemleri başarısız olacak.");
+        logger.LogInformation("Render'da connection string'i environment variable olarak ayarlayın: ConnectionStrings__DefaultConnection");
     }
     catch (Exception ex)
     {
